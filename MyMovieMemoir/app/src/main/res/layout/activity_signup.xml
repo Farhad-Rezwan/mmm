@@ -6,43 +6,267 @@
     android:layout_height="match_parent"
     android:background="#303030"
     tools:context=".SignupActivity">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="650dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        android:padding="30dp"
         app:layout_constraintTop_toTopOf="parent">
 
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="403dp"
-        android:layout_height="22dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Already regestered?"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="17dp" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="2dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="First name"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="15dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="2dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Surname"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="15dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15sp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textSize="15dp"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                android:layout_marginLeft="10dp"
+                android:textSize="15dp"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female"
+                android:layout_marginLeft="10dp"
+                android:textSize="15dp"/>
+
+        </RadioGroup>
+        <LinearLayout
+            android:id="@+id/linearLayoutDate"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date of Birth"
+                android:layout_marginRight="15dp"/>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:id="@+id/tvDate"
+                android:textSize="15sp"
+                android:layout_marginLeft="15dp"/>
+
+        </LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="2dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Address"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="15sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginRight="10dp"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Post code"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:textSize="15sp"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+           <Spinner
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/spinner"
+               android:layout_marginLeft="10dp"
+               />
+
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="2dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="15sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="2dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="15dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginTop="2dp"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirm password"
+                android:ems="10"
+                android:inputType="text"
+                android:textSize="15dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
-            android:id="@+id/buttonBackSignIn"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
             android:background="@drawable/button_background"
-            android:text="Sign in" />
+            android:layout_marginTop="20dp"
+            />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already regestered?"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="17dp"
+                android:layout_marginRight="10dp"/>
+
+            <Button
+                android:id="@+id/buttonBackSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:background="@drawable/button_background"
+                android:text="Sign in"
+                android:layout_marginLeft="10dp"/>
+
+
+        </LinearLayout>
 
     </LinearLayout>
+
+
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
