@@ -7,26 +7,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        setContentView(R.layout.activity_signup);
 
-        Button btn = findViewById(R.id.buttonRegester);
-        btn.setOnClickListener(new View.OnClickListener() {
+        Button button = findViewById(R.id.buttonBackSignIn);
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent;
-                intent = new Intent(MainActivity.this, SignupActivity.class);
+                Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+
                 startActivity(intent);
             }
         });
-
-
-
 
 
 
