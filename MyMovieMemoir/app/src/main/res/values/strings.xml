@@ -6,7 +6,6 @@
     <string name="assistive_t">Enter name</string>
 
     <string-array name="states">
-        <item>State</item>
         <item>VIC</item>
         <item>WA</item>
         <item>ACT</item>
@@ -14,4 +13,6 @@
         <item>QLD</item>
         <item>NT</item>
     </string-array>
+    <string name="radio_male">Male</string>
+    <string name="radio_female">Female</string>
 </resources>

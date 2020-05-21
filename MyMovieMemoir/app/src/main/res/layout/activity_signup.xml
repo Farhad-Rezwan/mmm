@@ -30,6 +30,7 @@
             >
 
             <EditText
+                android:id="@+id/reg_f_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="First name"
@@ -48,6 +49,7 @@
             >
 
             <EditText
+                android:id="@+id/reg_s_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Surname"
@@ -57,25 +59,24 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
         <RadioGroup
+            android:id="@+id/reg_gender_rg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="15sp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gender"
-                android:textSize="15dp"/>
             <RadioButton
+                android:id="@+id/reg_male_rb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Male"
+                android:text="@string/radio_male"
                 android:layout_marginLeft="10dp"
-                android:textSize="15dp"/>
+                android:textSize="15dp"
+                android:checked="true"/>
             <RadioButton
+                android:id="@+id/reg_female_rb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Female"
+                android:text="@string/radio_female"
                 android:layout_marginLeft="10dp"
                 android:textSize="15dp"/>
 
@@ -118,6 +119,7 @@
             >
 
             <EditText
+                android:id="@+id/reg_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Address"
@@ -152,6 +154,7 @@
                 >
 
                 <EditText
+                    android:id="@+id/reg_post_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Post code"
@@ -180,6 +183,7 @@
             >
 
             <EditText
+                android:id="@+id/reg_email_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
@@ -197,6 +201,7 @@
             >
 
             <EditText
+                android:id="@+id/reg_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
@@ -214,6 +219,7 @@
             >
 
             <EditText
+                android:id="@+id/reg_confirm_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Confirm password"
@@ -225,6 +231,7 @@
 
 
         <Button
+            android:id="@+id/reg_register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
@@ -263,7 +270,10 @@
 
 
         </LinearLayout>
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvAdd"/>
     </LinearLayout>
 
 
