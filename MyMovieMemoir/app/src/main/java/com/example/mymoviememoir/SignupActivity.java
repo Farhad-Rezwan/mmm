@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.mymoviememoir.networkconnection.NetworkConnection;
 
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 import java.text.ParseException;
@@ -40,8 +41,8 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
 
     private EditText etFName, etSName, etAddress, etPostCode, etEmail, etPassword, etconfirmPassword;
-    private String fName, sName, address, postCode, email, password, confirmPassword, dateOfBirth, state, gender;
-    private TextView dobDisplayDate;
+    private String fName, sName, address, postCode, email, password, confirmPassword, dateOfBirth, state, gender, result;
+    private TextView dobDisplayDate, resultTextView;
     private Button regButton, signButton;
     private Spinner spinner;
     private RadioGroup radioG;
@@ -54,6 +55,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        networkConnection=new NetworkConnection();
 
         etFName = (EditText) findViewById(R.id.reg_f_name);
         etSName = (EditText) findViewById(R.id.reg_s_name);
@@ -62,66 +64,14 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         etEmail = (EditText) findViewById(R.id.reg_email_id);
         etPassword = (EditText) findViewById(R.id.reg_password);
         etconfirmPassword = (EditText) findViewById(R.id.reg_confirm_password);
-
-
-
-
-        regButton = (Button) findViewById(R.id.reg_register_button);
-        regButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                register(); // to validate the inputs.
-
-                // splitting four parts of the text based oin the space between them
-                String [] details;
-                details = new String[]{fName, sName, gender, dateOfBirth, address, state, postCode};
-                if (details.length == 7) {
-                    AddPeopleTask addStudentTask = new AddPeopleTask();
-                    addStudentTask.execute(details);
-                }
+        resultTextView = findViewById(R.id.tvAdd);
 
 
 
 
 
-            }
-        });
-
-
-
-
-
-
+        // Gender
         radioG = (RadioGroup) findViewById(R.id.reg_gender_rg);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         dobDisplayDate = (TextView) findViewById(R.id.tvDate);
         dobDisplayDate.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +94,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
-
+        // states
         spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.states, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -154,7 +104,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
 
 
-
+        //dates
         dobDataSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -165,6 +115,23 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
             }
         };
 
+
+        regButton = (Button) findViewById(R.id.reg_register_button);
+        regButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resultTextView = findViewById(R.id.tvAdd);
+                register(); // to validate the inputs.
+
+                String[] details = {fName, sName, gender, dateOfBirth, address, state, postCode};
+                if (details.length == 7) {
+                    AddPeopleTask addStudentTask = new AddPeopleTask();
+                    addStudentTask.execute(details);
+                }
+            }
+        });
+
+
         signButton = (Button) findViewById(R.id.buttonBackSignIn);
         signButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,18 +141,6 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
                 startActivity(intent);
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     } // on create ends
@@ -215,37 +170,29 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
     public boolean validate() {
         boolean valid = true;
-        if (fName.isEmpty() || fName.length() > 32){
-            etFName.setError("Please enter valid first name");
-            valid = false;
-        }
-        if (sName.isEmpty() || sName.length() > 32){
-            etSName.setError("Please enter valid sur name");
-            valid = false;
-        }
-        if (address.isEmpty() || address.length() > 70){
-            etAddress.setError("Please enter valid address");
-            valid = false;
-        }
-        if (postCode.isEmpty() || !(200 <= Integer.parseInt(postCode)) || !((9729 >= Integer.parseInt(postCode)))) {
-            etPostCode.setError("Please enter valid post code");
-            valid = false;
-        }
-        if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Please enter valid email address");
-            valid = false;
-        }
-        if(password.isEmpty()) {
-            etPassword.setError("Password cannot be empty");
-            valid = false;
-        } else if (confirmPassword.isEmpty()){
-            etconfirmPassword.setError("Confirm password cannot be empty");
-            valid = false;
-        } else if (!password.equals(confirmPassword)){
-            etPassword.setError("Password is not matched");
-            etconfirmPassword.setError("Password is not matched");
-            valid = false;
-        }
+//        if (fName.isEmpty() || fName.length() > 32){
+//            etFName.setError("Please enter valid first name");
+//        }
+//        if (sName.isEmpty() || sName.length() > 32){
+//            etSName.setError("Please enter valid sur name");
+//        }
+//        if (address.isEmpty() || address.length() > 70){
+//            etAddress.setError("Please enter valid address");
+//        }
+//        if (postCode.isEmpty() || !(200 <= Integer.parseInt(postCode)) || !((9729 >= Integer.parseInt(postCode)))) {
+//            etPostCode.setError("Please enter valid post code");
+//        }
+//        if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+//            etEmail.setError("Please enter valid email address");
+//        }
+//        if(password.isEmpty()) {
+//            etPassword.setError("Password cannot be empty");
+//        } else if (confirmPassword.isEmpty()){
+//            etconfirmPassword.setError("Confirm password cannot be empty");
+//        } else if (!password.equals(confirmPassword)){
+//            etPassword.setError("Password is not matched");
+//            etconfirmPassword.setError("Password is not matched");
+//        }
 
         return valid;
 
@@ -268,32 +215,19 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
 
-    private class AddPeopleTask extends AsyncTask<String, Void, String> {
-
+    private class AddPeopleTask extends AsyncTask<String, Void, String>{
         @Override
-        protected String doInBackground(String... strings) {
-            String message = "The name " + strings[1] + " was added";
-
-            return "";
+        protected String doInBackground(String... params) {
+            String result= "The student with id: " + params[0] + " was added";
+            return networkConnection.addPerson(params);
         }
         @Override
-        protected void onPostExecute(String res) {
-            TextView resultTextView = findViewById(R.id.tvAdd);
-            resultTextView.setText(res);
+        protected void onPostExecute (String result) {
+            resultTextView.setText(result);
         }
     }
 
-//    private class AddPeopleTask extends AsyncTask<String, Void, String> {
-//        @Override
-//    protected String doInBackground(String... params) {
-//        String message= "The name " + params[0] + " was added";
-//        return networkConnection.addPerson(params)+ message ;
-//    }
-//        @Override
-//        protected void onPostExecute(String result) {
-//            TextView resultTextView = findViewById(R.id.tvAdd);
-//            resultTextView.setText(result); }
-//    }
+
 
 
     @Override
