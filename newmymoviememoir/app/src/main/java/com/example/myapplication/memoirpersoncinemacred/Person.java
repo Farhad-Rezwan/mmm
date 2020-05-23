@@ -12,8 +12,7 @@ public class Person {
     private String stateau;
     private int postcode;
 
-    public Person(int personid, String firstname, String surname, Character gender, Date dob, String address, String stateau, int postcode) {
-        this.personid = personid;
+    public Person(String firstname, String surname, Character gender, Date dob, String address, String stateau, int postcode) {
         this.firstname = firstname;
         this.surname = surname;
         this.gender = gender;

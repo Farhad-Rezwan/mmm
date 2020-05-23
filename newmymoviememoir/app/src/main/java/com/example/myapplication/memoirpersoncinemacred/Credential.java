@@ -13,10 +13,10 @@ public class Credential {
     public Credential() {
     }
 
-    public Credential(String username, String passwordhash, Person personid) {
-        this.credentialid = credentialid;
+    public Credential(String username, String passwordhash, Date signupdate) {
         this.username = username;
         this.passwordhash = passwordhash;
+        this.signupdate = signupdate;
     }
 
     public Integer getCredentialid() {

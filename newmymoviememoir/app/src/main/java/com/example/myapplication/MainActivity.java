@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 String fakeID = "0";
                 register();
-                String[] details = {fakeID,fName, sName, gender, dateOfBirth, address, state, postCode, email};
-                if (details.length == 9) {
+                String[] details = {fakeID, fName, sName, gender, dateOfBirth, address, state, postCode, email, password};
+                if (details.length == 10) {
                     AddPeopleTask addStudentTask = new AddPeopleTask();
                     addStudentTask.execute(details);
                 }
