@@ -1,17 +1,13 @@
-package com.example.mymoviememoir.networkconnection;
+package com.example.myapplication.networkconnection;
 
 import android.util.Log;
 
-import com.example.mymoviememoir.mmmjava.Person;
+import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.sql.Date;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -20,20 +16,28 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class NetworkConnection {
-
     private OkHttpClient client = null;
     private String results;
-
-    public static final MediaType JSON = MediaType.parse("application/json; charset = utf-8");
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public NetworkConnection() {
-        client=new OkHttpClient ();
+        client = new OkHttpClient();
     }
 
     private static final String BASE_URL = "http://10.0.2.2:8080/M3/web/";
 
 
-
+    public String getMaxID(){
+        final String methodPath = "rest/person/maxID";
+        Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
+        Request request = builder.build();
+        try {
+            Response response = client.newCall(request).execute();
+            results=response.body().string();
+        }catch (Exception e){ e.printStackTrace();
+        }
+        return results;
+    }
 
     public String addPerson(String[] details) {
 
@@ -47,8 +51,13 @@ public class NetworkConnection {
         java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
 
 
-        Person person = new Person(details[0], details[1], details[2].charAt(0), details[4], details[5]);
-//        Gson gson = new Gson();
+        Person person = new Person(details[0], details[1], details[2].charAt(0), sqlStartDate, details[4], details[5]);
+
+        String maxID = getMaxID();
+
+
+
+
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 
         String studentJson = gson.toJson(person);
@@ -71,4 +80,8 @@ public class NetworkConnection {
 
 
     }
+
+
+
+
 }

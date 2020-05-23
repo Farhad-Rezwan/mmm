@@ -1,19 +1,15 @@
-package com.example.mymoviememoir;
+package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,20 +21,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mymoviememoir.networkconnection.NetworkConnection;
+import com.example.myapplication.networkconnection.NetworkConnection;
 
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
-
-import java.text.ParseException;
 import java.util.Calendar;
 
-public class SignupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "SignupActivity";
-    private NetworkConnection networkConnection = null;
-
-
+    NetworkConnection networkConnection = null;
 
     private EditText etFName, etSName, etAddress, etPostCode, etEmail, etPassword, etconfirmPassword;
     private String fName, sName, address, postCode, email, password, confirmPassword, dateOfBirth, state, gender, result;
@@ -53,9 +43,9 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_main);
 
-        networkConnection =new NetworkConnection();
+        networkConnection = new NetworkConnection();
 
         etFName = (EditText) findViewById(R.id.reg_f_name);
         etSName = (EditText) findViewById(R.id.reg_s_name);
@@ -66,12 +56,9 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         etconfirmPassword = (EditText) findViewById(R.id.reg_confirm_password);
         resultTextView = findViewById(R.id.tvAdd);
 
-
-
-
-
         // Gender
         radioG = (RadioGroup) findViewById(R.id.reg_gender_rg);
+
 
         dobDisplayDate = (TextView) findViewById(R.id.tvDate);
         dobDisplayDate.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +70,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        SignupActivity.this,
+                        MainActivity.this,
                         android.R.style.Theme_Material_Light_Voice,
                         dobDataSetListener,
                         year, month, day);
@@ -93,35 +80,50 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
             }
         });
-        // states
+
+
         spinner = findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.states, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.states, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         state = spinner.getSelectedItem().toString();
 
-
-
         //dates
         dobDataSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            month  = month + 1;
-            Log.d(TAG, "onDateSet: " + "/" + year + "/" + month + "/" + dayOfMonth);
-            String date = month + "/" + dayOfMonth + "/" + year;
-            dobDisplayDate.setText(date);
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month  = month + 1;
+                Log.d(TAG, "onDateSet: " + "/" + year + "/" + month + "/" + dayOfMonth);
+                String date = month + "/" + dayOfMonth + "/" + year;
+                dobDisplayDate.setText(date);
             }
         };
 
+        //dates
+        dobDataSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month  = month + 1;
+                Log.d(TAG, "onDateSet: " + "/" + year + "/" + month + "/" + dayOfMonth);
+                String date = month + "/" + dayOfMonth + "/" + year;
+                dobDisplayDate.setText(date);
+            }
+        };
+
+
+
         resultTextView = findViewById(R.id.tvAdd);
-        regButton = (Button) findViewById(R.id.reg_register_button);
-        regButton.setOnClickListener(new View.OnClickListener() {
+        final Button getAllPersonbtn = findViewById(R.id.reg_register_button);
+        getAllPersonbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                register(); // to validate the inputs.
+//                GetAllPersonTask getAllPersonTask = new GetAllPersonTask();
+//                getAllPersonTask.execute();
 
+
+                register();
                 String[] details = {fName, sName, gender, dateOfBirth, address, state, postCode};
                 if (details.length == 7) {
                     AddPeopleTask addStudentTask = new AddPeopleTask();
@@ -131,19 +133,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         });
 
 
-        signButton = (Button) findViewById(R.id.buttonBackSignIn);
-        signButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-
-                startActivity(intent);
-            }
-        });
-
-
-    } // on create ends
-
+    }
     public void register() {
         initialize();
         if (!validate()) {
@@ -204,7 +194,7 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
         radioB = (RadioButton) findViewById(selectedId);
         gender = radioB.getText().toString().trim();
         dateOfBirth = dobDisplayDate.getText().toString();
-        state = spinner.getSelectedItem().toString();
+//        state = spinner.getSelectedItem().toString();
         address = etAddress.getText().toString().trim();
         postCode = etPostCode.getText().toString().trim();
         email = etEmail.getText().toString().trim();
@@ -214,10 +204,21 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     private class AddPeopleTask extends AsyncTask<String, Void, String>{
         @Override
         protected String doInBackground(String... params) {
-            String result= "The student with id: " + params[0] + " was added";
+            String result= "The person with name: " + params[0] + " was added";
             return networkConnection.addPerson(params);
         }
         @Override
@@ -229,15 +230,13 @@ public class SignupActivity extends AppCompatActivity implements AdapterView.OnI
 
 
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT);
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
+    private class GetAllPersonTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            return networkConnection.getAllPerson();
+        }
+        protected void onPostExecute(String person) {
+            resultTextView.setText(person);
+        }
     }
 }

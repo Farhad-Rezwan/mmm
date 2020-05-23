@@ -1,5 +1,4 @@
-package com.example.mymoviememoir.mmmjava;
-
+package com.example.myapplication.memoirpersoncinemacred;
 
 import java.util.Date;
 
@@ -13,7 +12,7 @@ public class Person {
     private String stateau;
     private int postcode;
 
-    public Person(String firstname, String surname, Character gender, String address, String stateau) {
+    public Person(String firstname, String surname, Character gender, Date dob, String address, String stateau) {
         this.firstname = firstname;
         this.surname = surname;
         this.gender = gender;
@@ -87,7 +86,4 @@ public class Person {
     public void setPostcode(int postcode) {
         this.postcode = postcode;
     }
-
-
 }
-
