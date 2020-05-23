@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cb8f786e-ae2f-401f-9500-f7e36bcd5fc6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/newmymoviememoir/app/src/main/java/com/example/myapplication/networkconnection/NetworkConnection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/newmymoviememoir/app/src/main/res/drawable/button_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/java/com/example/mymoviememoir/SignupActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/java/com/example/mymoviememoir/SignupActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/java/com/example/mymoviememoir/mmmjava/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/java/com/example/mymoviememoir/mmmjava/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/java/com/example/mymoviememoir/networkconnection/NetworkConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/java/com/example/mymoviememoir/networkconnection/NetworkConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/res/drawable-v24/button_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/MyMovieMemoir/app/src/main/res/drawable-v24/button_background.xml" afterDir="false" />
-    </list>
+    <list default="true" id="cb8f786e-ae2f-401f-9500-f7e36bcd5fc6" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +45,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

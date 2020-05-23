@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -115,6 +116,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     AddPeopleTask addStudentTask = new AddPeopleTask();
                     addStudentTask.execute(details);
                 }
+            }
+        });
+
+        // on button click for sign in.
+
+        signButton = (Button) findViewById(R.id.buttonBackSignIn);
+        signButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+
+                startActivity(intent);
             }
         });
 
