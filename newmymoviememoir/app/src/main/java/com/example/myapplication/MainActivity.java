@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Gender
         radioG = (RadioGroup) findViewById(R.id.reg_gender_rg);
 
-
+        // date of birth
         dobDisplayDate = (TextView) findViewById(R.id.tvDate);
         dobDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,46 +81,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        dobDataSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month  = month + 1;
+                Log.d(TAG, "onDateSet: " + "/" + year + "/" + month + "/" + dayOfMonth);
+                String date = month + "/" + dayOfMonth + "/" + year;
+                dobDisplayDate.setText(date);
+            }
+        };
 
+        // states
         spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.states, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        state = spinner.getSelectedItem().toString();
-
-        //dates
-        dobDataSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                month  = month + 1;
-                Log.d(TAG, "onDateSet: " + "/" + year + "/" + month + "/" + dayOfMonth);
-                String date = month + "/" + dayOfMonth + "/" + year;
-                dobDisplayDate.setText(date);
-            }
-        };
-
-        //dates
-        dobDataSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                month  = month + 1;
-                Log.d(TAG, "onDateSet: " + "/" + year + "/" + month + "/" + dayOfMonth);
-                String date = month + "/" + dayOfMonth + "/" + year;
-                dobDisplayDate.setText(date);
-            }
-        };
 
 
 
+        // on button click for regester
         resultTextView = findViewById(R.id.tvAdd);
         final Button getAllPersonbtn = findViewById(R.id.reg_register_button);
         getAllPersonbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                GetAllPersonTask getAllPersonTask = new GetAllPersonTask();
-//                getAllPersonTask.execute();
 
                 String fakeID = "0";
                 register();
@@ -134,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     }
+
+
+
+
     public void register() {
         initialize();
         if (!validate()) {
@@ -161,26 +150,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         boolean valid = true;
         if (fName.isEmpty() || fName.length() > 32){
             etFName.setError("Please enter valid first name");
+            valid = false;
         }
         if (sName.isEmpty() || sName.length() > 32){
             etSName.setError("Please enter valid sur name");
+            valid = false;
         }
         if (address.isEmpty() || address.length() > 70){
             etAddress.setError("Please enter valid address");
+            valid = false;
         }
         if (postCode.isEmpty() || !(200 <= Integer.parseInt(postCode)) || !((9729 >= Integer.parseInt(postCode)))) {
             etPostCode.setError("Please enter valid post code");
+            valid = false;
         }
         if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Please enter valid email address");
+            valid = false;
         }
-        if(password.isEmpty()) {
-            etPassword.setError("Password cannot be empty");
+        if(password.isEmpty() || !(6<= password.length())) {
+            etPassword.setError("Password cannot be empty or less than 6 characters");
+            valid = false;
         } else if (confirmPassword.isEmpty()){
             etconfirmPassword.setError("Confirm password cannot be empty");
+            valid = false;
         } else if (!password.equals(confirmPassword)){
             etPassword.setError("Password is not matched");
             etconfirmPassword.setError("Password is not matched");
+            valid = false;
         }
 
         return valid;
@@ -194,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         radioB = (RadioButton) findViewById(selectedId);
         gender = radioB.getText().toString().trim();
         dateOfBirth = dobDisplayDate.getText().toString();
-//        state = spinner.getSelectedItem().toString();
+        state = spinner.getSelectedItem().toString();
         address = etAddress.getText().toString().trim();
         postCode = etPostCode.getText().toString().trim();
         email = etEmail.getText().toString().trim();
@@ -231,13 +228,4 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-//    private class GetAllPersonTask extends AsyncTask<Void, Void, String> {
-//        @Override
-//        protected String doInBackground(Void... params) {
-//            return networkConnection.getAllPerson();
-//        }
-//        protected void onPostExecute(String person) {
-//            resultTextView.setText(person);
-//        }
-//    }
 }
