@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         android.R.style.Theme_Material_Light_Voice,
                         dobDataSetListener,
                         year, month, day);
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
                 dialog.show();
 
