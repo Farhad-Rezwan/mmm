@@ -2,12 +2,20 @@ package com.example.myapplication.networkconnection;
 
 import android.util.Log;
 
+import com.example.myapplication.memoirpersoncinemacred.Credential;
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -42,18 +50,40 @@ public class NetworkConnection {
     public String addPerson(String[] details) {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
-        java.util.Date date = null;
+        Date date = null;
         try {
-            date = sdf1.parse(details[3]);
+            date = sdf1.parse(details[4]);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+        String maxID;
+        maxID = getMaxID();
+        Log.i("String maxid", "maxid: " + maxID);
+
+        JsonElement jelement = new JsonParser().parse(maxID);
+
+        JsonArray jarray = jelement.getAsJsonArray();
+        JsonObject jobject = jarray.get(0).getAsJsonObject();
+        maxID = jobject.get("ID").getAsString();
+
+        Log.i("String maxid", "maxid: " + maxID);
 
 
-        Person person = new Person(details[0], details[1], details[2].charAt(0), sqlStartDate, details[4], details[5]);
+//        json.getAsString();
 
-        String maxID = getMaxID();
+
+
+
+//        int x = Integer.parseInt(maxID) + 1;
+
+        int postcode = Integer.parseInt(details[7]);
+        int personid = Integer.parseInt(maxID) + 1;
+
+        Person person = new Person(personid, details[1], details[2], details[3].charAt(0), sqlStartDate, details[5], details[6], postcode);
+        Credential credential = new Credential(details[8], )
+
+
 
 
 

@@ -3,7 +3,7 @@ package com.example.myapplication.memoirpersoncinemacred;
 import java.util.Date;
 
 public class Person {
-    private Integer personid;
+    private int personid;
     private String firstname;
     private String surname;
     private Character gender;
@@ -12,14 +12,15 @@ public class Person {
     private String stateau;
     private int postcode;
 
-    public Person(String firstname, String surname, Character gender, Date dob, String address, String stateau) {
+    public Person(int personid, String firstname, String surname, Character gender, Date dob, String address, String stateau, int postcode) {
+        this.personid = personid;
         this.firstname = firstname;
         this.surname = surname;
         this.gender = gender;
         this.dob = dob;
         this.address = address;
         this.stateau = stateau;
-        this.postcode = 1200;
+        this.postcode = postcode;
     }
 
 

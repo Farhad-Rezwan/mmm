@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     NetworkConnection networkConnection = null;
 
     private EditText etFName, etSName, etAddress, etPostCode, etEmail, etPassword, etconfirmPassword;
-    private String fName, sName, address, postCode, email, password, confirmPassword, dateOfBirth, state, gender, result;
+    private String fName, sName, address, postCode, email, password, confirmPassword, dateOfBirth, state, gender;
     private TextView dobDisplayDate, resultTextView;
     private Button regButton, signButton;
     private Spinner spinner;
@@ -122,10 +122,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                GetAllPersonTask getAllPersonTask = new GetAllPersonTask();
 //                getAllPersonTask.execute();
 
-
+                String fakeID = "0";
                 register();
-                String[] details = {fName, sName, gender, dateOfBirth, address, state, postCode};
-                if (details.length == 7) {
+                String[] details = {fakeID,fName, sName, gender, dateOfBirth, address, state, postCode, email};
+                if (details.length == 9) {
                     AddPeopleTask addStudentTask = new AddPeopleTask();
                     addStudentTask.execute(details);
                 }
@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected String doInBackground(String... params) {
             String result= "The person with name: " + params[0] + " was added";
+            Log.d(TAG, "doInBackground: " + result);
             return networkConnection.addPerson(params);
         }
         @Override
@@ -230,13 +231,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-    private class GetAllPersonTask extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... params) {
-            return networkConnection.getAllPerson();
-        }
-        protected void onPostExecute(String person) {
-            resultTextView.setText(person);
-        }
-    }
+//    private class GetAllPersonTask extends AsyncTask<Void, Void, String> {
+//        @Override
+//        protected String doInBackground(Void... params) {
+//            return networkConnection.getAllPerson();
+//        }
+//        protected void onPostExecute(String person) {
+//            resultTextView.setText(person);
+//        }
+//    }
 }
