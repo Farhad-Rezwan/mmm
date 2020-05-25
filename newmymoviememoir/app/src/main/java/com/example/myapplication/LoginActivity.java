@@ -18,14 +18,24 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-
-        // on button click for register
-        Button btn = findViewById(R.id.buttonRegester);
-        btn.setOnClickListener(new View.OnClickListener() {
+        // on button click for login in login page
+        Button loginBtn = findViewById(R.id.sign_login);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent;
+                intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // on button click for register in login page
+        Button regesterBtn = findViewById(R.id.buttonRegester);
+        regesterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                // here main activity refers to the register page
                 intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
