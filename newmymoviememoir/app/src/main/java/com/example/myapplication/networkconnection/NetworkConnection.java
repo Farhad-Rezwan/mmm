@@ -12,6 +12,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
+import org.json.JSONException;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +41,7 @@ public class NetworkConnection {
 
 
     public String getMaxID(){
+        results = "";
         final String methodPath = "rest/person/maxID";
         Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
         Request request = builder.build();
@@ -54,21 +57,27 @@ public class NetworkConnection {
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
         Date date = null;
+        java.sql.Date sqlStartDate = null;
         try {
             date = sdf1.parse(details[4]);
+            sqlStartDate = new java.sql.Date(date.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
         String maxID;
         maxID = getMaxID();
         Log.i("String maxid", "maxid: " + maxID);
 
-        JsonElement jelement = new JsonParser().parse(maxID);
+        try {
+            JsonElement jelement = new JsonParser().parse(maxID);
+            JsonArray jarray = jelement.getAsJsonArray();
+            JsonObject jobject = jarray.get(0).getAsJsonObject();
+            maxID = jobject.get("ID").getAsString();
 
-        JsonArray jarray = jelement.getAsJsonArray();
-        JsonObject jobject = jarray.get(0).getAsJsonObject();
-        maxID = jobject.get("ID").getAsString();
+        }catch (Exception e) {
+
+        }
+
 
         Log.i("String maxid", "maxid: " + maxID);
 
