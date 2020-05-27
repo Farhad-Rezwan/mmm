@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
+public class ExampleItem {
+    private String movieName;
+    private String releaseYear;
+    private String movieURL;
 
-public class MovieSearch {
-
-    public MovieSearch(String movieName, String releaseYear, String movieURL) {
+    public ExampleItem(String movieName, String releaseYear, String movieURL) {
         this.movieName = movieName;
         this.releaseYear = releaseYear;
         this.movieURL = movieURL;
@@ -32,9 +34,4 @@ public class MovieSearch {
     public void setMovieURL(String movieURL) {
         this.movieURL = movieURL;
     }
-
-    private String movieName;
-    private String releaseYear;
-    private String movieURL;
-
 }

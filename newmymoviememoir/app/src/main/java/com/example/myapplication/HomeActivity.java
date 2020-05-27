@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,7 +13,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.myapplication.fragment.HomeFragment;
-import com.example.myapplication.fragment.MovieMemoirFragment;
+import com.example.myapplication.fragment.MovieViewFragment;
 import com.example.myapplication.fragment.MovieSearchFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -57,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragment(new MovieSearchFragment());
                 break;
             case R.id.displayMessage:
-                replaceFragment(new MovieMemoirFragment());
+                replaceFragment(new MovieViewFragment());
                 break;
         }
         //this code closes the drawer after you selected an item from the menu,otherwise stay open

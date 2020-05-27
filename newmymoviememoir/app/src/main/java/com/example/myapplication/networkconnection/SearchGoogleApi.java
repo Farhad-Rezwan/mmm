@@ -1,9 +1,8 @@
 package com.example.myapplication.networkconnection;
 
-import android.graphics.Movie;
 import android.util.Log;
 
-import com.example.myapplication.MovieSearch;
+import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,6 +78,8 @@ public class SearchGoogleApi {
 
                 String year = title.split("[\\(\\)]")[1];
                 String tit =  title.split("[\\(\\)]")[0];
+
+                result.add(new MovieSearch(tit, year, url));
 
                 Log.d(TAG, "getObjects: " + url + tit + year);
 
