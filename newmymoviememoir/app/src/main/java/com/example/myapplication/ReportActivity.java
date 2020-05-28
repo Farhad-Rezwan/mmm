@@ -53,11 +53,8 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
     String startDate, endDate;
 
     //    pie everything
-//    private float[] yData = {25.3f, 10.6f, 66.76f, 44.32f, 46.01f, 16.89f, 16.89f};
     private ArrayList<Integer> yAxisData = new ArrayList<>();
-    //    private String[] xData = {"Mitch", "Jessica", "Kelsey", "Sam", "Robert", "Farhad", "Adnan"};
     private ArrayList<String> xAxisData = new ArrayList<>();
-
     private PieChart pieChart;
 
     @Override
@@ -106,11 +103,8 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
         });
 
 //        everything on piechart
-
         Log.d(TAG, "onCreate: Starting to create chart");
-
         pieChart = (PieChart) findViewById(R.id.chart);
-
 //        Description description = new Description();
 //        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
 //        description.setText(getString(R.string.pieDescription));
@@ -131,8 +125,6 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
 
 //        addDataSet();
-
-
         pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -326,90 +318,16 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
         pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
         pieChart.setUsePercentValues(true);
 
-        // add colors
-//        ArrayList<Integer> colors = new ArrayList<>(); not commented
-//        colors.add(Color.GRAY);
-//        colors.add(Color.BLUE);
-//        colors.add(Color.RED);
-//        colors.add(Color.GREEN);
-//        colors.add(Color.CYAN);
-//        colors.add(Color.YELLOW);
-//        colors.add(Color.MAGENTA);
-
-//        pieDataSet.setColor(colors.get(0));
-
-//---------prev
-//        final int[] MY_COLORS = {Color.rgb(192,0,0), Color.rgb(255,0,0), Color.rgb(255,192,0),
-//                Color.rgb(127,127,127), Color.rgb(146,208,80), Color.rgb(0,176,80), Color.rgb(79,129,189)};
-//
-//        for(int c: MY_COLORS)
-//            colors.add(c);
-
-//        pieDataSet.setColors(colors);
-
-//        __________
-        // add legend to chart
-
-//         pieDataSet.setSelectionShift(10f);
-//         pieDataSet.setValueLinePart1OffsetPercentage(80.f);
-//         pieDataSet.setValueLinePart1Length(1f);
-//         pieDataSet.setValueLinePart2Length(0.9f);
-//        categories_dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-//
-//        PieData pieData = new PieData(categories_dataSet);
-//
-//        graph.setData(pieData);
-//
-//        Legend legend = graph.getLegend();
-//        List<LegendEntry> legendEntries = new ArrayList<>();
-
-        Legend legend = pieChart.getLegend();
-        List<LegendEntry> legendEntries = new ArrayList<>();
-//
         RandomColor randomColor = new RandomColor();
         int[] colors = randomColor.randomColor(yEntriys.size());
 //
-        for (int i = 0; i < xEntrys.size(); i++) {
-            LegendEntry legendEntry = new LegendEntry();
-            legendEntry.formColor = colors[i];
-            legendEntry.label = (xEntrys.get(i));
-            legendEntries.add(legendEntry);
-        }
-//
         pieDataSet.setColors(colors);
 //
-        legend.setEnabled(true);
-        legend.setCustom(legendEntries);
 //
         Description description = new Description();
         description.setText("Analysing movie watched by suburb");
         pieChart.setDescription(description);
 //
-//        graph.animateY(5000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        Legend legend = pieChart.getLegend();
-//        legend.setForm(Legend.LegendForm.CIRCLE);
 
 
         // Create pie data object
