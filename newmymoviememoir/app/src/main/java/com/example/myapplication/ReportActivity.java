@@ -16,13 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.github.lzyzsd.randomcolor.RandomColor;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -49,10 +52,10 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
     TextView startTextView, endTextView, resultTextView;
     String startDate, endDate;
 
-//    pie everything
+    //    pie everything
 //    private float[] yData = {25.3f, 10.6f, 66.76f, 44.32f, 46.01f, 16.89f, 16.89f};
     private ArrayList<Integer> yAxisData = new ArrayList<>();
-//    private String[] xData = {"Mitch", "Jessica", "Kelsey", "Sam", "Robert", "Farhad", "Adnan"};
+    //    private String[] xData = {"Mitch", "Jessica", "Kelsey", "Sam", "Robert", "Farhad", "Adnan"};
     private ArrayList<String> xAxisData = new ArrayList<>();
 
     private PieChart pieChart;
@@ -61,6 +64,8 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+
+
 
         networkConnection = new NetworkConnection();
 
@@ -96,7 +101,7 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
                     ShowPieTask showPieTask = new ShowPieTask();
                     showPieTask.execute(details);
                 }
-                
+
             }
         });
 
@@ -106,17 +111,19 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
         pieChart = (PieChart) findViewById(R.id.chart);
 
-        Description description = new Description();
-        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
-        description.setText(getString(R.string.pieDescription));
-        pieChart.setDescription(description);
+//        Description description = new Description();
+//        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
+//        description.setText(getString(R.string.pieDescription));
+//        pieChart.setDescription(description);
         pieChart.setRotationEnabled(true);
 
         pieChart.setHoleRadius(25f);
         pieChart.setTransparentCircleAlpha(0);
-        pieChart.setCenterText("Super Cool Chart");
+        pieChart.setCenterText("Cinema Suburb Preference");
         pieChart.setCenterTextSize(10);
         pieChart.setDrawEntryLabels(true);
+
+
 
         pieChart.setTouchEnabled(true);
         MyMarkerView mv = new MyMarkerView(getApplicationContext(), R.layout.custom_marker_view);
@@ -170,10 +177,10 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
                     .parse(startDate);
             Date end = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH)
                     .parse(endDate);
-            
+
             Log.d(TAG, "validate: " + start);
             Log.d(TAG, "validate: " + end);
-            
+
             if (start.compareTo(end) < 0) {
                 startTextView.setError(null);
                 endTextView.setError(null);
@@ -304,20 +311,23 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
         ArrayList<PieEntry> yEntriys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<>();
+        Log.d(TAG, "addDataSet: yAxisData" + yAxisData);
 
         for(int i = 0; i < yAxisData.size(); i++) {
-            yEntriys.add(new PieEntry(yAxisData.get(i), i));
+            yEntriys.add(new PieEntry((yAxisData.get(i)), i));
         }
-        for(int i = 1; i <xAxisData.size(); i++) {
+        for(int i = 0; i <xAxisData.size(); i++) {
             xEntrys.add(xAxisData.get(i));
         }
         // create the dataset
         PieDataSet pieDataSet = new PieDataSet(yEntriys, "Employee sales");
         pieDataSet.setSliceSpace(2);
         pieDataSet.setValueTextSize(12);
+        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
+        pieChart.setUsePercentValues(true);
 
         // add colors
-        ArrayList<Integer> colors = new ArrayList<>();
+//        ArrayList<Integer> colors = new ArrayList<>(); not commented
 //        colors.add(Color.GRAY);
 //        colors.add(Color.BLUE);
 //        colors.add(Color.RED);
@@ -328,18 +338,78 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
 //        pieDataSet.setColor(colors.get(0));
 
+//---------prev
+//        final int[] MY_COLORS = {Color.rgb(192,0,0), Color.rgb(255,0,0), Color.rgb(255,192,0),
+//                Color.rgb(127,127,127), Color.rgb(146,208,80), Color.rgb(0,176,80), Color.rgb(79,129,189)};
+//
+//        for(int c: MY_COLORS)
+//            colors.add(c);
 
-        final int[] MY_COLORS = {Color.rgb(192,0,0), Color.rgb(255,0,0), Color.rgb(255,192,0),
-                Color.rgb(127,127,127), Color.rgb(146,208,80), Color.rgb(0,176,80), Color.rgb(79,129,189)};
+//        pieDataSet.setColors(colors);
 
-        for(int c: MY_COLORS)
-            colors.add(c);
-
-        pieDataSet.setColors(colors);
+//        __________
         // add legend to chart
 
+//         pieDataSet.setSelectionShift(10f);
+//         pieDataSet.setValueLinePart1OffsetPercentage(80.f);
+//         pieDataSet.setValueLinePart1Length(1f);
+//         pieDataSet.setValueLinePart2Length(0.9f);
+//        categories_dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+//
+//        PieData pieData = new PieData(categories_dataSet);
+//
+//        graph.setData(pieData);
+//
+//        Legend legend = graph.getLegend();
+//        List<LegendEntry> legendEntries = new ArrayList<>();
+
         Legend legend = pieChart.getLegend();
-        legend.setForm(Legend.LegendForm.CIRCLE);
+        List<LegendEntry> legendEntries = new ArrayList<>();
+//
+        RandomColor randomColor = new RandomColor();
+        int[] colors = randomColor.randomColor(yEntriys.size());
+//
+        for (int i = 0; i < xEntrys.size(); i++) {
+            LegendEntry legendEntry = new LegendEntry();
+            legendEntry.formColor = colors[i];
+            legendEntry.label = (xEntrys.get(i));
+            legendEntries.add(legendEntry);
+        }
+//
+        pieDataSet.setColors(colors);
+//
+        legend.setEnabled(true);
+        legend.setCustom(legendEntries);
+//
+        Description description = new Description();
+        description.setText("Analysing movie watched by suburb");
+        pieChart.setDescription(description);
+//
+//        graph.animateY(5000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        Legend legend = pieChart.getLegend();
+//        legend.setForm(Legend.LegendForm.CIRCLE);
 
 
         // Create pie data object
@@ -352,3 +422,4 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
 
 }
+
