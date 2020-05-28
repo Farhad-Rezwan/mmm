@@ -58,6 +58,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.displayMessage:
                 replaceFragment(new MovieViewFragment());
                 break;
+            case R.id.report:
+                replaceFragment(new MovieViewFragment());
+                break;
         }
         //this code closes the drawer after you selected an item from the menu,otherwise stay open
         drawerLayout.closeDrawer(GravityCompat.START);

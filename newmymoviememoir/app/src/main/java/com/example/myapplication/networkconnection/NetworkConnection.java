@@ -14,11 +14,13 @@ import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,6 +31,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class NetworkConnection {
+
+
+    private static final String TAG = "Network Connection";
+
     private OkHttpClient client = null;
     private String results;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -173,4 +179,42 @@ public class NetworkConnection {
     }
 
 
+    public String moviesWatchPerSuburb(String[] details) {
+
+        try {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd");
+            Date date1, date2 = null;
+            java.sql.Date sqlStartDate, sqlEndDate = null;
+            date1 = sdf1.parse(details[0]);
+            date2 = sdf1.parse(details[1]);
+            sqlStartDate = new java.sql.Date(date1.getTime());
+            sqlEndDate = new java.sql.Date(date2.getTime());
+
+            final String methodPath = "rest/memoir/findCSuburbByPersonIDandDateRange/" + 1 + "/" + sqlStartDate + "/" + sqlEndDate;
+            Log.d(TAG, "moviesWatchPerSuburb: " + methodPath);
+            Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            results=response.body().string();
+
+
+
+
+
+
+
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return results;
+    }
 }
