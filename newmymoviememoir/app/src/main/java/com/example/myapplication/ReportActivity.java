@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +16,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +48,14 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
     Button startButton, endButton;
     TextView startTextView, endTextView, resultTextView;
     String startDate, endDate;
+
+//    pie everything
+//    private float[] yData = {25.3f, 10.6f, 66.76f, 44.32f, 46.01f, 16.89f, 16.89f};
+    private ArrayList<Integer> yAxisData = new ArrayList<>();
+//    private String[] xData = {"Mitch", "Jessica", "Kelsey", "Sam", "Robert", "Farhad", "Adnan"};
+    private ArrayList<String> xAxisData = new ArrayList<>();
+
+    private PieChart pieChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +99,52 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
                 
             }
         });
+
+//        everything on piechart
+
+        Log.d(TAG, "onCreate: Starting to create chart");
+
+        pieChart = (PieChart) findViewById(R.id.chart);
+
+        Description description = new Description();
+        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
+        description.setText(getString(R.string.pieDescription));
+        pieChart.setDescription(description);
+        pieChart.setRotationEnabled(true);
+
+        pieChart.setHoleRadius(25f);
+        pieChart.setTransparentCircleAlpha(0);
+        pieChart.setCenterText("Super Cool Chart");
+        pieChart.setCenterTextSize(10);
+        pieChart.setDrawEntryLabels(true);
+
+        pieChart.setTouchEnabled(true);
+        MyMarkerView mv = new MyMarkerView(getApplicationContext(), R.layout.custom_marker_view);
+        pieChart.setMarker(mv);
+
+
+//        addDataSet();
+
+
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.d(TAG, "onValueSelected: Value Selected form chart");
+                Log.d(TAG, "onValueSelected: " + e.toString());
+                Log.d(TAG, "onValueSelected: " + h.toString());
+
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
+
+
+
     }
 
     public void registerDate() {
@@ -186,18 +252,23 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             resultTextView.setText(result);
-            createPie(result);
-        }
-
-        private void createPie(String result) {
-
             String json = result;
-            WatchHistory[] respone = new Gson().fromJson(json, WatchHistory[].class);
-            for (WatchHistory s : respone) {
+            WatchHistory[] resposne = new Gson().fromJson(json, WatchHistory[].class);
+
+
+            for (WatchHistory s : resposne) {
+
+                yAxisData.add(s.getCountMoviesWatched());
+                xAxisData.add(s.getCinemaSuburb());
                 Log.d(TAG, "createPie: " + s.getCinemaSuburb());
                 Log.d(TAG, "createPie: " + s.getCountMoviesWatched());
+
             }
+            addDataSet();
         }
+
+
+
 
         public class WatchHistory {
             private String cinemaSuburb;
@@ -227,4 +298,57 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
         }
 
     }
+
+    private void addDataSet() {
+        Log.d(TAG, "addDataSet: started");
+
+        ArrayList<PieEntry> yEntriys = new ArrayList<>();
+        ArrayList<String> xEntrys = new ArrayList<>();
+
+        for(int i = 0; i < yAxisData.size(); i++) {
+            yEntriys.add(new PieEntry(yAxisData.get(i), i));
+        }
+        for(int i = 1; i <xAxisData.size(); i++) {
+            xEntrys.add(xAxisData.get(i));
+        }
+        // create the dataset
+        PieDataSet pieDataSet = new PieDataSet(yEntriys, "Employee sales");
+        pieDataSet.setSliceSpace(2);
+        pieDataSet.setValueTextSize(12);
+
+        // add colors
+        ArrayList<Integer> colors = new ArrayList<>();
+//        colors.add(Color.GRAY);
+//        colors.add(Color.BLUE);
+//        colors.add(Color.RED);
+//        colors.add(Color.GREEN);
+//        colors.add(Color.CYAN);
+//        colors.add(Color.YELLOW);
+//        colors.add(Color.MAGENTA);
+
+//        pieDataSet.setColor(colors.get(0));
+
+
+        final int[] MY_COLORS = {Color.rgb(192,0,0), Color.rgb(255,0,0), Color.rgb(255,192,0),
+                Color.rgb(127,127,127), Color.rgb(146,208,80), Color.rgb(0,176,80), Color.rgb(79,129,189)};
+
+        for(int c: MY_COLORS)
+            colors.add(c);
+
+        pieDataSet.setColors(colors);
+        // add legend to chart
+
+        Legend legend = pieChart.getLegend();
+        legend.setForm(Legend.LegendForm.CIRCLE);
+
+
+        // Create pie data object
+
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+    }
+
+
+
 }
