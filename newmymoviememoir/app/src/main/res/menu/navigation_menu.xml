@@ -9,4 +9,7 @@
     <item
         android:id="@+id/report"
         android:title="Movie View" />
+    <item
+        android:id="@+id/map_2"
+        android:title="Map View"/>
 </menu>

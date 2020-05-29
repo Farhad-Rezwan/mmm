@@ -23,4 +23,8 @@
     <string name="Open">open</string>
     <string name="Close">close</string>
     <string name="pieDescription">Need to add description</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
