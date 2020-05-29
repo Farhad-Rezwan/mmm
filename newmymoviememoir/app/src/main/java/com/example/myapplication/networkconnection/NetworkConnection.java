@@ -217,4 +217,22 @@ public class NetworkConnection {
 
         return results;
     }
+
+    public String moviesWatchedPerMonth(String[] details) {
+        try {
+            final String methodPath = "rest/memoir/findMovieWachedPerMonthGivenPersonIDandYear/" + 1 + "/" + details[0];
+            Log.d(TAG, "moviesWatchedPerMonth: " + methodPath);
+            Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            results=response.body().string();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
 }

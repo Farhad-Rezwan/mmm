@@ -3,46 +3,46 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.networkconnection.NetworkConnection;
 import com.github.lzyzsd.randomcolor.RandomColor;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-public class ReportActivity<WatchHistory> extends AppCompatActivity {
+public class ReportActivity<WatchHistory> extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     NetworkConnection networkConnection = null;
@@ -50,12 +50,21 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
     private static final String TAG = "ReportActivity";
     Button startButton, endButton;
     TextView startTextView, endTextView, resultTextView;
-    String startDate, endDate;
+    String startDate, endDate, yearSelected;
 
     //    pie everything
-    private ArrayList<Integer> yAxisData = new ArrayList<>();
-    private ArrayList<String> xAxisData = new ArrayList<>();
+    private ArrayList<Integer> yAxisDataPie = new ArrayList<>();
+    private ArrayList<String> xAxisDataPie = new ArrayList<>();
     private PieChart pieChart;
+
+
+    //    bar everything
+    private ArrayList<Integer> yAxisDataBar = new ArrayList<>();
+    private ArrayList<String> xAxisDataBar = new ArrayList<>();
+    private TextView barText;
+    private Button barButton;
+    private Spinner barSpinner;
+    private BarChart barChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +150,27 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
             }
         });
 
+
+
+
+
+
+    //        Everything of Bar Chart
+        barText = findViewById(R.id.bar_result);
+        barButton = findViewById(R.id.bar_button);
+        barSpinner = findViewById(R.id.year_spinner);
+
+
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.year_array, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        barSpinner.setAdapter(adapter);
+        barSpinner.setOnItemSelectedListener(this);
+
+        barChart = (BarChart) findViewById(R.id.bar_chart);
+        barChart.getDescription().setEnabled(false);
+        barChart.setFitBars(true);
 
 
 
@@ -240,10 +270,11 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
     }
 
+
     private class ShowPieTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            String result = "The person with name: " + params[0] + " was added";
+            String result = "task name: " + params[0];
             Log.d(TAG, "doInBackground: " + result);
             return networkConnection.moviesWatchPerSuburb(params);
         }
@@ -257,8 +288,8 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
             for (WatchHistory s : resposne) {
 
-                yAxisData.add(s.getCountMoviesWatched());
-                xAxisData.add(s.getCinemaSuburb());
+                yAxisDataPie.add(s.getCountMoviesWatched());
+                xAxisDataPie.add(s.getCinemaSuburb());
                 Log.d(TAG, "createPie: " + s.getCinemaSuburb());
                 Log.d(TAG, "createPie: " + s.getCountMoviesWatched());
 
@@ -303,13 +334,13 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
 
         ArrayList<PieEntry> yEntriys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<>();
-        Log.d(TAG, "addDataSet: yAxisData" + yAxisData);
+        Log.d(TAG, "addDataSet: yAxisData" + yAxisDataPie);
 
-        for(int i = 0; i < yAxisData.size(); i++) {
-            yEntriys.add(new PieEntry((yAxisData.get(i)), i));
+        for(int i = 0; i < yAxisDataPie.size(); i++) {
+            yEntriys.add(new PieEntry((yAxisDataPie.get(i)), i));
         }
-        for(int i = 0; i <xAxisData.size(); i++) {
-            xEntrys.add(xAxisData.get(i));
+        for(int i = 0; i < xAxisDataPie.size(); i++) {
+            xEntrys.add(xAxisDataPie.get(i));
         }
         // create the dataset
         PieDataSet pieDataSet = new PieDataSet(yEntriys, "Employee sales");
@@ -337,6 +368,149 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity {
         pieChart.invalidate();
     }
 
+
+    //for spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+
+
+//        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+
+        yearSelected = text;
+
+        String[] details = {yearSelected};
+        Log.d(TAG, "onItemSelected: " + yearSelected);
+        if (details.length == 1) {
+            ShowBar showBar = new ShowBar();
+            showBar.execute(details);
+        }
+
+
+
+
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+
+
+    private class ShowBar extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "Task Name" + params[0];
+            Log.d(TAG, "doInBackground: " + result);
+            return networkConnection.moviesWatchedPerMonth(params);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            barText.setText(result);
+
+
+            String json = result;
+            MonthHistory[] response = new Gson().fromJson(json, MonthHistory[].class);
+
+
+            for (MonthHistory s : response) {
+
+                yAxisDataBar.add(s.getCountMovieWatched());
+                xAxisDataBar.add(s.getMonth());
+                Log.d(TAG, "createBar: " + s.getMonth());
+                Log.d(TAG, "createBar: " + s.getCountMovieWatched());
+            }
+
+//            ArrayList<String> months = new ArrayList<String>();
+//            months.add("January");
+//            months.add("February");
+//            months.add("March");
+//            months.add("April");
+//            months.add("May");
+//            months.add("June");
+//            months.add("July");
+//            months.add("August");
+//            months.add("September");
+//            months.add("October");
+//            months.add("November");
+//            months.add("December");
+//
+//            ArrayList<MonthHistory> orderedMonthHistory= new ArrayList<>();
+//
+//            for (int i = 0; i < months.size(); i++) {
+//                orderedMonthHistory.add(new MonthHistory(months.get(i)));
+//            }
+//            Log.d(TAG, "onPostExecute: orderedMonthHistory populated" + orderedMonthHistory);
+//
+//            for (int i = 0; i < orderedMonthHistory.size(); i++){
+//                for (int j = 0; j < response.length; j++) {
+//                    if (orderedMonthHistory.get(i).getMonth().equals(response[j].getMonth())){
+//                        orderedMonthHistory.get(i).setCountMovieWatched(response[j].getCountMovieWatched());
+//                        break;
+//                    }
+//                    else {
+//                        orderedMonthHistory.get(i).setCountMovieWatched(0);
+//                    }
+//                }
+//            }
+
+
+
+
+            addDataSetForBar();
+        }
+
+
+    }
+    public class MonthHistory {
+        private String month;
+        private int countMovieWatched;
+
+
+        public MonthHistory(String month) {
+            this.month = month;
+        }
+
+        public String getMonth() {
+            return month;
+        }
+
+        public void setMonth(String month) {
+            this.month = month;
+        }
+
+        public int getCountMovieWatched() {
+            return countMovieWatched;
+        }
+
+        public void setCountMovieWatched(int countMovieWatched) {
+            this.countMovieWatched = countMovieWatched;
+        }
+    }
+
+    private void addDataSetForBar() {
+        ArrayList<BarEntry> yVals = new ArrayList<>();
+
+        for (int i = 0; i < yAxisDataBar.size(); i++){
+            yVals.add(new BarEntry(i, yAxisDataBar.get(i)));
+        }
+
+        BarDataSet barDataSet = new BarDataSet(yVals, "Month count");
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setDrawValues(true); // values will be shown above the graph
+
+        BarData barData = new BarData(barDataSet);
+
+        barChart.setData(barData);
+        barChart.invalidate();
+        barChart.animateY(500);
+
+    }
 
 
 }

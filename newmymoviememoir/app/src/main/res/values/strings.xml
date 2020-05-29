@@ -11,6 +11,15 @@
         <item>NT</item>
     </string-array>
 
+    <string-array name="year_array">
+        <item>2015</item>
+        <item>2016</item>
+        <item>2017</item>
+        <item>2018</item>
+        <item>2019</item>
+        <item>2020</item>
+    </string-array>
+
     <string name="Open">open</string>
     <string name="Close">close</string>
     <string name="pieDescription">Need to add description</string>
