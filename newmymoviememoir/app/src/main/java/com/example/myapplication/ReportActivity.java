@@ -100,6 +100,8 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
         showPieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                xAxisDataPie.clear();
+                yAxisDataPie.clear();
                 registerDate();
                 String[] details = {startDate, endDate};
                 Log.d(TAG, "onClick: " + details.length);
@@ -179,7 +181,7 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
     public void registerDate() {
         initialize();
         if (!validate()) {
-            Toast.makeText(this, "Registration has failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid Date Range", Toast.LENGTH_SHORT).show();
         }
         else {
             onValidationSuccess();
@@ -294,7 +296,8 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
                 Log.d(TAG, "createPie: " + s.getCountMoviesWatched());
 
             }
-            addDataSet();
+            if (resposne.length > 0 )
+                addDataSet();
         }
 
 
@@ -378,9 +381,10 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
 //        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
 
         yearSelected = text;
+        yAxisDataBar.clear();
+        xAxisDataBar.clear();
 
         String[] details = {yearSelected};
-        Log.d(TAG, "onItemSelected: " + yearSelected);
         if (details.length == 1) {
             ShowBar showBar = new ShowBar();
             showBar.execute(details);
