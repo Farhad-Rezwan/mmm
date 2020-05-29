@@ -42,7 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ReportActivity<WatchHistory> extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ReportActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     NetworkConnection networkConnection = null;
@@ -100,8 +100,6 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
         showPieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                xAxisDataPie.clear();
-                yAxisDataPie.clear();
                 registerDate();
                 String[] details = {startDate, endDate};
                 Log.d(TAG, "onClick: " + details.length);
@@ -296,8 +294,7 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
                 Log.d(TAG, "createPie: " + s.getCountMoviesWatched());
 
             }
-            if (resposne.length > 0 )
-                addDataSet();
+            addDataSet();
         }
 
 
@@ -381,8 +378,6 @@ public class ReportActivity<WatchHistory> extends AppCompatActivity implements A
 //        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
 
         yearSelected = text;
-        yAxisDataBar.clear();
-        xAxisDataBar.clear();
 
         String[] details = {yearSelected};
         if (details.length == 1) {
