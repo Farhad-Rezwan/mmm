@@ -36,10 +36,6 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
-        <activity android:name=".MainMapActivity">
-
-
-        </activity>
         <activity android:name=".ReportActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
