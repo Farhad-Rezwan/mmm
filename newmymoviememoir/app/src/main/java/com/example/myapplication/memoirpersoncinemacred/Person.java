@@ -12,7 +12,14 @@ public class Person {
     private String stateau;
     private int postcode;
 
-    public Person(){
+//    should be deleted after completion.
+    public Person(int personid, String firstname, String surname, String address, String stateau, int postcode){
+        this.personid = personid;
+        this.firstname = firstname;
+        this.surname = surname;
+        this.address = address;
+        this.stateau = stateau;
+        this.postcode = postcode;
 
     }
 

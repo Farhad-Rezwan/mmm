@@ -19,6 +19,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -32,6 +33,8 @@ public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
     View v;
 
+    Double lat, lng;
+
     SupportMapFragment mapFragment;
 
     public MapBlankFragment() {
@@ -42,6 +45,13 @@ public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle bundle = this.getArguments();
+        lat = bundle.getDouble("lat");
+        lng = bundle.getDouble("lng");
+
+
+
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map_blank, container, false);
 
@@ -77,10 +87,20 @@ public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(40.689247, -74.044502)).title("Statue of Liberty")).setSnippet("I want to go there sometiome");
-        CameraPosition Liberty = CameraPosition.builder().target(new LatLng(40.689247, -74.044502)).zoom(16).bearing(0).tilt(45).build();
-
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Statue of Liberty")).setSnippet("I want to go there sometiome");
+        CameraPosition Liberty = CameraPosition.builder().target(new LatLng(lat, lng)).zoom(16).bearing(0).tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

@@ -10,14 +10,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.myapplication.fragment.HomeFragment;
 import com.example.myapplication.fragment.MovieViewFragment;
 import com.example.myapplication.fragment.MovieSearchFragment;
+import com.example.myapplication.memoirpersoncinemacred.Person;
+import com.example.myapplication.networkconnection.GeoLocation;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = "HomeActivity";
 
 
     private DrawerLayout drawerLayout;
@@ -62,14 +71,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragment(new MovieViewFragment());
                 break;
             case R.id.map_2:
-                replaceFragment(new MapBlankFragment());
+                geoLocation();
+//                replaceFragment(new MapBlankFragment());
                 break;
         }
         //this code closes the drawer after you selected an item from the menu,otherwise stay open
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
     private void replaceFragment(Fragment nextFragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, nextFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void replaceFragmentWithBundle(Fragment nextFragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nextFragment);
@@ -83,5 +103,60 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
         return super.onOptionsItemSelected(item);
     }
+
+
+
+//    maps
+    private void geoLocation() {
+        Person person = new Person (1,"Mr Warda", "Mr Warda", "Caulfield", "VIC" , 3174);
+
+        String address = person.getAddress();
+        GeoLocation geoLocation = new GeoLocation();
+        geoLocation.getAddress(address, getApplicationContext(),new GeoHandler());
+
+
+    }
+
+    private class GeoHandler extends Handler {
+        @Override
+        public void handleMessage (Message msg) {
+            Double latitude, longitude;
+            switch (msg.what) {
+                case 1:
+                    Bundle bundle = msg.getData();
+                    latitude = bundle.getDouble("latitude");
+                    longitude = bundle.getDouble("longitude");
+                    Bundle transferBund = new Bundle();
+                    transferBund.putDouble("lat", latitude);
+                    transferBund.putDouble("lng", longitude);
+
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    MapBlankFragment mapFrag = new MapBlankFragment();
+                    mapFrag.setArguments(transferBund);
+                    fragmentTransaction.replace(R.id.content_frame, mapFrag);
+                    fragmentTransaction.commit();
+
+
+//                    fragmentTransaction.replace(R.id.content_frame, new MapBlankFragment());
+//                    fragmentTransaction.commit();
+
+
+
+
+                    break;
+                default:
+                    latitude = null;
+                    longitude = null;
+            }
+
+            Log.d(TAG, "handleMessage: " + latitude + longitude);
+
+
+        }
+    }
+
 
 }
