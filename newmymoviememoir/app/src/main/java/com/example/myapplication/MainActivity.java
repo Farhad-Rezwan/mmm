@@ -48,20 +48,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         networkConnection = new NetworkConnection();
 
-        etFName = (EditText) findViewById(R.id.reg_f_name);
-        etSName = (EditText) findViewById(R.id.reg_s_name);
-        etAddress = (EditText) findViewById(R.id.reg_address);
-        etPostCode = (EditText) findViewById(R.id.reg_post_code);
-        etEmail = (EditText) findViewById(R.id.reg_email_id);
-        etPassword = (EditText) findViewById(R.id.reg_password);
-        etconfirmPassword = (EditText) findViewById(R.id.reg_confirm_password);
+        etFName = findViewById(R.id.reg_f_name);
+        etSName = findViewById(R.id.reg_s_name);
+        etAddress = findViewById(R.id.reg_address);
+        etPostCode = findViewById(R.id.reg_post_code);
+        etEmail = findViewById(R.id.reg_email_id);
+        etPassword = findViewById(R.id.reg_password);
+        etconfirmPassword = findViewById(R.id.reg_confirm_password);
         resultTextView = findViewById(R.id.tvAdd);
 
         // Gender
-        radioG = (RadioGroup) findViewById(R.id.reg_gender_rg);
+        radioG = findViewById(R.id.reg_gender_rg);
 
         // date of birth
-        dobDisplayDate = (TextView) findViewById(R.id.tvDate);
+        dobDisplayDate = findViewById(R.id.tvDate);
         dobDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // on button click for sign in.
 
-        signButton = (Button) findViewById(R.id.buttonBackSignIn);
+        signButton = findViewById(R.id.buttonBackSignIn);
         signButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

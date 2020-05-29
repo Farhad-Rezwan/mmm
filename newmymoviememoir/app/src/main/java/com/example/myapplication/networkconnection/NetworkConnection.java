@@ -13,6 +13,7 @@ import com.google.gson.JsonParser;
 
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -232,6 +233,112 @@ public class NetworkConnection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return results;
+    }
+
+    public String credentialCheck(String[] params) {
+
+        try {
+            String plaintext = params[1];
+            MessageDigest m = null;
+            try {
+                m = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+
+            m.reset();
+            m.update(plaintext.getBytes());
+            byte[] digest = m.digest();
+            BigInteger bigInt = new BigInteger(1,digest);
+            String hashtext = bigInt.toString(16);
+// Now we need to zero pad it if you actually want the full 32 chars.
+            while(hashtext.length() < 32 ){
+                hashtext = "0"+hashtext;
+            }
+
+
+
+
+
+
+            final String methodPath2 = "rest/credential/crede/" + params[0] + "/" + hashtext;
+            Log.d(TAG, "validateUserName: " + methodPath2);
+            Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath2);
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            Log.d(TAG, "credentialCheck: " + response);
+            results=response.body().string();
+            Log.d(TAG, "validateUserName: " + results);
+
+            JsonElement jelement = new JsonParser().parse(results);
+            JsonArray jarray = jelement.getAsJsonArray();
+            int x = jarray.size();
+
+
+
+
+//            x = 0 means not found
+            if (x == 1){
+                JsonObject jobject = jarray.get(0).getAsJsonObject();
+
+
+                Log.d(TAG, "credentialCheck: " + x);
+
+
+                String personidString = jobject.get("ID").getAsString();
+
+                final String methodPath = "rest/person/" + personidString;
+                Log.d(TAG, "validateUserName: " + personidString);
+                Request.Builder builder2 = new Request.Builder(); builder.url(BASE_URL + methodPath);
+                Request request2 = builder.build();
+
+                Response response2 = client.newCall(request2).execute();
+                Log.d(TAG, "credentialCheck: " + response2);
+                results=response2.body().string();
+                Log.d(TAG, "validateUserName: " + results);
+
+            } else {
+                results = null;
+            }
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            results = null;
+        }
+
+
+        return results;
+    }
+
+
+
+    public String validateUserName(String[] params) {
+
+        try {
+            final String methodPath = "rest/credential/findByUsername/" + params[0];
+            Log.d(TAG, "validateUserName: " + methodPath);
+            Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            results=response.body().string();
+            Log.d(TAG, "validateUserName: " + results);
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
         return results;
     }

@@ -44,6 +44,7 @@
             android:textSize="35dp"></TextView>
 
         <EditText
+            android:id="@+id/sign_username"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginBottom="20dp"
@@ -56,6 +57,7 @@
             android:textColorHint="@android:color/darker_gray" />
 
         <EditText
+            android:id="@+id/sign_password"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginBottom="20dp"

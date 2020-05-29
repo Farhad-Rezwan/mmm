@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.NetworkConnection;
 import com.github.lzyzsd.randomcolor.RandomColor;
 import com.github.mikephil.charting.charts.BarChart;
