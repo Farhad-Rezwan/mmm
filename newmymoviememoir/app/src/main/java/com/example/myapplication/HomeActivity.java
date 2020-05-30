@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,16 +19,26 @@ import android.view.MenuItem;
 import com.example.myapplication.fragment.HomeFragment;
 import com.example.myapplication.fragment.MovieViewFragment;
 import com.example.myapplication.fragment.MovieSearchFragment;
+import com.example.myapplication.memoirpersoncinemacred.Cinema;
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.GeoLocation;
+import com.example.myapplication.networkconnection.NetworkConnection;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    MapBlankFragment mfragment = new MapBlankFragment();
     private static final String TAG = "HomeActivity";
 
+    NetworkConnection networkConnection = null;
+    String tempCinemaName, tempCinemaLocation;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
@@ -37,6 +48,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+
+
+        networkConnection = new NetworkConnection();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,8 +87,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragment(new MovieViewFragment());
                 break;
             case R.id.map_2:
-                geoLocation();
-//                replaceFragment(new MapBlankFragment());
+
+                getCinemaGeolocation();
                 break;
         }
         //this code closes the drawer after you selected an item from the menu,otherwise stay open
@@ -89,11 +105,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
-    private void replaceFragmentWithBundle(Fragment nextFragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, nextFragment);
-        fragmentTransaction.commit();
+    private void replaceFragmentMap(Fragment nextFragment) {
+
     }
 
 
@@ -107,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 //    maps
-    private void geoLocation() {
+    private void getUserGeolocation() {
         Person person = new Person (1,"Mr Warda", "Mr Warda", "Caulfield", "VIC" , 3174);
 
         String address = person.getAddress();
@@ -116,6 +129,65 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+    private void getCinemaGeolocation() {
+        String[] methodName = {"getAllCinemaNameAndSuburb"};
+        GetCinemaSuburbTask getCinemaSuburb = new GetCinemaSuburbTask();
+        getCinemaSuburb.execute(methodName);
+
+    }
+
+
+    private class GetCinemaSuburbTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "task name: " + params[0];
+            Log.d(TAG, "doInBackground: " + result);
+            return networkConnection.getAllCinemaNameSuburb(params);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            ArrayList<Cinema> cinemas = new ArrayList<>();
+
+            JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
+
+            JsonObject jsonObject;
+
+            int arraySize = jsonArray.size();
+            for (int i = 0; i < arraySize; i++) {
+                jsonObject = jsonArray.get(i).getAsJsonObject();
+                Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
+                String cinemaname = jsonObject.get("cinemaname").getAsString();
+                String cinemasuburb = jsonObject.get("cinemasuburb").getAsString();
+                cinemas.add(new Cinema(cinemaname, cinemasuburb));
+            }
+
+            for(Cinema cinema: cinemas){
+                GeoLocation geoLocation = new GeoLocation();
+                tempCinemaName = cinema.getCinemaname();
+                tempCinemaLocation = cinema.getCinemasuburb();
+                geoLocation.getAddress(tempCinemaLocation, getApplicationContext(),new GeoHandler());
+
+                tempCinemaName = "";
+                tempCinemaLocation = "";
+
+            }
+
+
+            getUserGeolocation();
+            // starting new bundle for arraylist
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content_frame, mfragment);
+            fragmentTransaction.commit();
+
+
+        }
+
+    }
+
 
     private class GeoHandler extends Handler {
         @Override
@@ -126,25 +198,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     Bundle bundle = msg.getData();
                     latitude = bundle.getDouble("latitude");
                     longitude = bundle.getDouble("longitude");
-                    Bundle transferBund = new Bundle();
-                    transferBund.putDouble("lat", latitude);
-                    transferBund.putDouble("lng", longitude);
 
+                    Bundle bundle2 = new Bundle();
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    MapBlankFragment mapFrag = new MapBlankFragment();
-                    mapFrag.setArguments(transferBund);
-                    fragmentTransaction.replace(R.id.content_frame, mapFrag);
-                    fragmentTransaction.commit();
-
-
-//                    fragmentTransaction.replace(R.id.content_frame, new MapBlankFragment());
-//                    fragmentTransaction.commit();
-
-
-
+                    bundle2.putDouble("lat", latitude);
+                    bundle2.putDouble("lng", longitude);
+                    mfragment.setArguments(bundle2);
 
                     break;
                 default:
@@ -157,6 +216,4 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         }
     }
-
-
 }

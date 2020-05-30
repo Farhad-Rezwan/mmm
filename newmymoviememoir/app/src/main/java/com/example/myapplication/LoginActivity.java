@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.example.myapplication.save.PersonObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -26,6 +27,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
+
+
+    private PersonObject personObject;
     private boolean isUser;
     private static final String TAG = "LoginActivity";
 
@@ -45,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
 
         userNameEt = findViewById(R.id.sign_username);
         passwordEt = findViewById(R.id.sign_password);
+
+        personObject = (PersonObject) this.getApplicationContext();
 
 
 
@@ -161,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                     int postcode = jObject.get("postcode").getAsInt();
 
                     person = new Person(personid, firstname, surname, gender, dob, address, stateau, postcode);
+                    personObject.setPerson(person);
 
                 } else {
                     Toast.makeText(LoginActivity.this, "invalid user name and password", Toast.LENGTH_SHORT).show();

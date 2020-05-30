@@ -318,28 +318,26 @@ public class NetworkConnection {
     }
 
 
-
-    public String validateUserName(String[] params) {
+    public String getAllCinemaNameSuburb(String[] params) {
 
         try {
-            final String methodPath = "rest/credential/findByUsername/" + params[0];
-            Log.d(TAG, "validateUserName: " + methodPath);
+            final String methodPath = "rest/cinema/" + params[0];
+            Log.d(TAG, "getAllCinemaNameSuburb: " + methodPath);
             Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
             Request request = builder.build();
 
             Response response = client.newCall(request).execute();
             results=response.body().string();
-            Log.d(TAG, "validateUserName: " + results);
-
-
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-
         return results;
     }
+
+
+
+
 }
