@@ -22,18 +22,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.example.myapplication.save.PersonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "SignupActivity";
     NetworkConnection networkConnection = null;
+    private PersonObject personObject;
 
     private EditText etFName, etSName, etAddress, etPostCode, etEmail, etPassword, etconfirmPassword;
     private String fName, sName, address, postCode, email, password, confirmPassword, dateOfBirth, state, gender;
-    private TextView dobDisplayDate, resultTextView;
+    private TextView dobDisplayDate;
     private Button regButton, signButton;
     private Spinner spinner;
     private RadioGroup radioG;
@@ -47,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         networkConnection = new NetworkConnection();
+        personObject = (PersonObject) this.getApplicationContext();
 
         etFName = findViewById(R.id.reg_f_name);
         etSName = findViewById(R.id.reg_s_name);
@@ -55,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         etEmail = findViewById(R.id.reg_email_id);
         etPassword = findViewById(R.id.reg_password);
         etconfirmPassword = findViewById(R.id.reg_confirm_password);
-        resultTextView = findViewById(R.id.tvAdd);
 
         // Gender
         radioG = findViewById(R.id.reg_gender_rg);
@@ -103,19 +114,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         // on button click for regester
-        resultTextView = findViewById(R.id.tvAdd);
         final Button getAllPersonbtn = findViewById(R.id.reg_register_button);
         getAllPersonbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String fakeID = "0";
                 register();
-                String[] details = {fakeID, fName, sName, gender, dateOfBirth, address, state, postCode, email, password};
-                if (details.length == 10) {
-                    AddPeopleTask addStudentTask = new AddPeopleTask();
-                    addStudentTask.execute(details);
-                }
+
+
             }
         });
 
@@ -158,6 +164,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d(TAG, "onRegisterSuccess: password: " + password);
         Log.d(TAG, "onRegisterSuccess: confirmPassword: " + confirmPassword);
         // T
+        String fakeID = "0";
+        String[] details = {fakeID, fName, sName, gender, dateOfBirth, address, state, postCode, email, password};
+        if (details.length == 10) {
+            AddPeopleTask addStudentTask = new AddPeopleTask();
+            addStudentTask.execute(details);
+        }
     }
 
     public boolean validate() {
@@ -235,11 +247,60 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         @Override
         protected void onPostExecute (String result) {
-            resultTextView.setText(result);
+            Person person = null;
+            try {
+
+                if (!(result == null)){
+                    JsonElement jelement = new JsonParser().parse(result);
+                    JsonObject jObject = jelement.getAsJsonObject();
+                    int personid = jObject.get("personid").getAsInt();
+                    String firstname = jObject.get("firstname").getAsString();
+                    String surname = jObject.get("surname").getAsString();
+                    Character gender = jObject.get("gender").getAsString().charAt(0);
+                    String dateInString = jObject.get("dob").getAsString();
+
+
+                    String string = dateInString.replace("T00:00:00+10:00", "");
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                    Date date = format.parse(string);
+
+
+                    Date dob = date;
+
+
+
+                    String address = jObject.get("address").getAsString();
+                    String stateau = jObject.get("stateau").getAsString();
+                    int postcode = jObject.get("postcode").getAsInt();
+
+                    person = new Person(personid, firstname, surname, gender, dob, address, stateau, postcode);
+                    personObject.setPerson(person);
+
+                } else {
+                    Toast.makeText(MainActivity.this, " Error Occured", Toast.LENGTH_SHORT).show();
+                }
+
+                if (person == null){
+                    Toast.makeText(MainActivity.this, "registration has failed", Toast.LENGTH_SHORT).show();
+                } else  {
+                    onRegestrationSuccess();
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
         }
     }
 
+    private void onRegestrationSuccess() {
 
+        Intent intent;
+        intent = new Intent(MainActivity.this, HomeActivity.class);
+        startActivity(intent);
+    }
 
 
 }
