@@ -16,8 +16,9 @@ import java.util.Scanner;
 public class SearchGoogleApi {
     private static final String TAG = "SearchGoogleApi";
 
-    private static final String API_KEY = "AIzaSyBtHiGy5osty_oXxr1PDdVm2CdvQN0RIU0";
-    private static final String SEARCH_ID_cx = "010591429130415407485:7ueotli3jon";
+    private static final String API_KEY = "AIzaSyBjs-STMNnr_E1sK0uDl1pCYgH0vYSq8wQ";
+    private static final String SEARCH_ID_cx = "001057649297786872976:3fu1tdktl02";
+
 
     public static String search(String keyword, String[] params, String[] values) {
         keyword = keyword.replace(" ", "+");
@@ -68,18 +69,24 @@ public class SearchGoogleApi {
                 JSONObject item = jsonArray.getJSONObject(i);
                 JSONObject pagemap = item.getJSONObject("pagemap");
                 JSONArray cse_thumbnails  = pagemap.getJSONArray("cse_thumbnail");
+                JSONArray aggregaterating = pagemap.getJSONArray("aggregaterating");
                 JSONObject cse_thumbnail = cse_thumbnails.getJSONObject(0);
+                JSONObject rateObject = aggregaterating.getJSONObject(0);
                 String url = cse_thumbnail.getString("src");
-
                 JSONArray metatags = pagemap.getJSONArray("metatags");
                 JSONObject metatag = metatags.getJSONObject(0);
-                String title = metatag.getString("og:title");
+
+
+                //          Getting basic informations...
+                String title = metatag.getString("title");
+                String infor = metatag.getString("og:description");
+                String rate = rateObject.getString("ratingvalue");
 
 
                 String year = title.split("[\\(\\)]")[1];
                 String tit =  title.split("[\\(\\)]")[0];
 
-                result.add(new MovieSearch(tit, year, url));
+                result.add(new MovieSearch(tit, year, url, infor, rate));
 
                 Log.d(TAG, "getObjects: " + url + tit + year);
 

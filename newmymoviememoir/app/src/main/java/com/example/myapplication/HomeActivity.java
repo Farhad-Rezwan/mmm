@@ -23,22 +23,24 @@ import com.example.myapplication.memoirpersoncinemacred.Cinema;
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.GeoLocation;
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.example.myapplication.save.PersonObject;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private PersonObject personObject;
     MapBlankFragment mfragment = new MapBlankFragment();
     private static final String TAG = "HomeActivity";
 
     NetworkConnection networkConnection = null;
-    String tempCinemaName, tempCinemaLocation;
+    Double tempCinemalat, tempCinemaLon;
+    ArrayList<Cinema> cinemaArrayList;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
@@ -50,7 +52,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_home);
 
 
-
+        personObject = (PersonObject) this.getApplicationContext();
+        cinemaArrayList = new ArrayList<Cinema>();
 
         networkConnection = new NetworkConnection();
 
@@ -68,7 +71,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         replaceFragment(new HomeFragment());
-
+        getUserGeolocation();
 
 
     }
@@ -87,8 +90,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragment(new MovieViewFragment());
                 break;
             case R.id.map_2:
-
-                getCinemaGeolocation();
+                
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content_frame, mfragment);
+                fragmentTransaction.commit();
+//                getCinemaGeolocation();
                 break;
         }
         //this code closes the drawer after you selected an item from the menu,otherwise stay open
@@ -105,9 +112,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.commit();
     }
 
-    private void replaceFragmentMap(Fragment nextFragment) {
-
-    }
 
 
     @Override
@@ -121,9 +125,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 //    maps
     private void getUserGeolocation() {
-        Person person = new Person (1,"Mr Warda", "Mr Warda", "Caulfield", "VIC" , 3174);
+//        Person person = new Person (1,"Mr Warda", "Mr Warda", "Caulfield", "VIC" , 3174);
 
-        String address = person.getAddress();
+        String address = personObject.getPerson().getAddress();
         GeoLocation geoLocation = new GeoLocation();
         geoLocation.getAddress(address, getApplicationContext(),new GeoHandler());
 
@@ -165,17 +169,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             for(Cinema cinema: cinemas){
                 GeoLocation geoLocation = new GeoLocation();
-                tempCinemaName = cinema.getCinemaname();
-                tempCinemaLocation = cinema.getCinemasuburb();
+                String tempCinemaName = cinema.getCinemaname();
+                String tempCinemaLocation = cinema.getCinemasuburb();
                 geoLocation.getAddress(tempCinemaLocation, getApplicationContext(),new GeoHandler());
 
-                tempCinemaName = "";
-                tempCinemaLocation = "";
+                Log.d(TAG, "onPostExecute: " + tempCinemaLocation + tempCinemaName + tempCinemalat + tempCinemaLon);
+
+                cinemaArrayList.add(new Cinema(tempCinemaName, tempCinemaLocation, tempCinemalat, tempCinemaLon));
+                tempCinemaLon = 0.00;
+                tempCinemalat = 0.00;
+
+
+
+
 
             }
 
 
-            getUserGeolocation();
+
             // starting new bundle for arraylist
 
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -199,11 +210,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     latitude = bundle.getDouble("latitude");
                     longitude = bundle.getDouble("longitude");
 
+
                     Bundle bundle2 = new Bundle();
 
                     bundle2.putDouble("lat", latitude);
                     bundle2.putDouble("lng", longitude);
                     mfragment.setArguments(bundle2);
+
+
+                    tempCinemalat = latitude;
+                    tempCinemaLon = longitude;
+
+
 
                     break;
                 default:

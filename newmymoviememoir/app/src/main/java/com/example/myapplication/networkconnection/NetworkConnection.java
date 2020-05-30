@@ -223,16 +223,6 @@ public class NetworkConnection {
             Response response = client.newCall(request).execute();
             results=response.body().string();
 
-
-
-
-
-
-
-
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {

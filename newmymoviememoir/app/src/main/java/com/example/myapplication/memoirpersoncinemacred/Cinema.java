@@ -17,6 +17,13 @@ public class Cinema implements Serializable {
     public Cinema() {
     }
 
+    public Cinema(String cinemaname, String cinemasuburb, Double latitude, Double longitude) {
+        this.cinemaname = cinemaname;
+        this.cinemasuburb = cinemasuburb;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public String getCinemaname() {
         return cinemaname;
     }

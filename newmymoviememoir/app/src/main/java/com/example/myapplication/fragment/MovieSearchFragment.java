@@ -17,9 +17,10 @@ import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.R;
 import com.example.myapplication.networkconnection.SearchGoogleApi;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MovieSearchFragment extends Fragment {
+public class MovieSearchFragment extends Fragment implements Serializable {
 
     private ArrayList<MovieSearch> mMovieSearchList;
     private String keyword;

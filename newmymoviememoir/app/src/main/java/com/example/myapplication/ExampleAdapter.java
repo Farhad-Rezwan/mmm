@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.fragment.MovieViewFragment;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExViewHolder> {
@@ -20,6 +25,8 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExViewHo
 
     private Context eContext;
     private ArrayList<MovieSearch> eMovieList;
+    private String imageURL, movieName, movieYear, information;
+    private String rate;
 
     public ExampleAdapter(Context context, ArrayList<MovieSearch> movieList) {
         eContext = context;
@@ -36,13 +43,43 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExViewHo
     public void onBindViewHolder(ExViewHolder holder, int position) {
         MovieSearch currMovieSearch = eMovieList.get(position);
 
-        String imageURL = currMovieSearch.getMovieURL();
-        String movieName = currMovieSearch.getMovieName();
-        String movieYear = currMovieSearch.getReleaseYear();
+        imageURL = currMovieSearch.getMovieURL();
+        movieName = currMovieSearch.getMovieName();
+        movieYear = currMovieSearch.getReleaseYear();
+        information = currMovieSearch.getInfor();
+        rate = currMovieSearch.getRate();
 
         holder.eTextViewName.setText(movieName);
         holder.eTextViewYear.setText(movieYear);
         Picasso.get().load(imageURL).into(holder.eImageView); //.resize
+
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInNewFragment();
+
+            }
+        });
+
+    }
+
+
+
+    private void showInNewFragment() {
+        FragmentManager fragmentManager = ((HomeActivity)eContext).getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        MovieViewFragment movieViewf = new MovieViewFragment();
+        MovieSearch mSearch = new MovieSearch(movieName, movieYear, imageURL, information, rate);
+
+
+        Bundle msBundle = new Bundle();
+        msBundle.putSerializable("movieSearchResult", (Serializable) mSearch);
+        movieViewf.setArguments(msBundle);
+        fragmentTransaction.replace(R.id.content_frame, movieViewf);
+        fragmentTransaction.commit();
+
+
     }
 
     @Override
