@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/addMessage"
+        android:id="@+id/movie_search"
         android:title="Movie Search" />
     <item
-        android:id="@+id/displayMessage"
+        android:id="@+id/movie_view"
         android:title="Movie View" />
     <item
-        android:id="@+id/report"
-        android:title="Movie View" />
+        android:id="@+id/movie_memoir"
+        android:title="Movie Memoir" />
+    <item
+        android:id="@+id/watch_list"
+        android:title="Movie Watch List" />
+    <item
+        android:id="@+id/reports"
+        android:title="Reports"/>
     <item
         android:id="@+id/map_2"
         android:title="Map View"/>

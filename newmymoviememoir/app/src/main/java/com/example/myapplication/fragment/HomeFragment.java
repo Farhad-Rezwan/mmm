@@ -88,8 +88,9 @@ public class HomeFragment extends Fragment {
 
         homeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        String [] details = {personObject.getPerson().getPersonid().toString()};
-        String [] details = {"3"};
+        String [] details = {personObject.getPerson().getPersonid().toString()};
+//        String [] details = {"3"}; // testing purpose
+
         AsyncHighestMovie asyncHighestMovie = new AsyncHighestMovie();
         asyncHighestMovie.execute(details);
 

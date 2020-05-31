@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import com.example.myapplication.fragment.HomeFragment;
 import com.example.myapplication.fragment.MovieViewFragment;
 import com.example.myapplication.fragment.MovieSearchFragment;
+import com.example.myapplication.fragment.ReportFragment;
 import com.example.myapplication.memoirpersoncinemacred.Cinema;
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.GeoLocation;
@@ -80,17 +81,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.addMessage:
+            case R.id.movie_search:
                 replaceFragment(new MovieSearchFragment());
                 break;
-            case R.id.displayMessage:
+                // will be deleted after adding button here.
+            case R.id.movie_view:
                 replaceFragment(new MovieViewFragment());
                 break;
-            case R.id.report:
-                replaceFragment(new MovieViewFragment());
+            case R.id.movie_memoir:
+//                replaceFragment(new MovieViewFragment());
+                break;
+            case R.id.reports:
+                replaceFragment(new ReportFragment());
+                break;
+            case R.id.watch_list:
+//                replaceFragment(new MovieViewFragment());
                 break;
             case R.id.map_2:
-                
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_frame, mfragment);
