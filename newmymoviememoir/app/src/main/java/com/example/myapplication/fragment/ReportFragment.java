@@ -21,12 +21,13 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.MyMarkerView;
 import com.example.myapplication.R;
-import com.example.myapplication.ReportActivity;
 import com.example.myapplication.networkconnection.NetworkConnection;
 import com.github.lzyzsd.randomcolor.RandomColor;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -45,18 +46,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 public class ReportFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
 
-    NetworkConnection networkConnection = null;
+    private NetworkConnection networkConnection = null;
 
     private static final String TAG = "ReportActivity";
-    Button startButton, endButton;
-    TextView startTextView, endTextView, resultTextView;
-    String startDate, endDate, yearSelected;
+    private Button startButton, endButton;
+    private TextView startTextView, endTextView;
+    private String startDate, endDate, yearSelected;
 
     //    pie everything
     private ArrayList<Integer> yAxisDataPie = new ArrayList<>();
@@ -67,7 +69,6 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
     //    bar everything
     private ArrayList<Integer> yAxisDataBar = new ArrayList<>();
     private ArrayList<String> xAxisDataBar = new ArrayList<>();
-    private TextView barText;
     private Button barButton;
     private Spinner barSpinner;
     private BarChart barChart;
@@ -104,11 +105,12 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
         });
 
 
-        resultTextView = view.findViewById(R.id.pie_result);
         final Button showPieButton = view.findViewById(R.id.rep_show_pie);
         showPieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                xAxisDataPie.clear();
+                yAxisDataPie.clear();
                 registerDate();
                 String[] details = {startDate, endDate};
                 Log.d(TAG, "onClick: " + details.length);
@@ -165,7 +167,6 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
 
         //        Everything of Bar Chart
-        barText = view.findViewById(R.id.bar_result);
         barButton = view.findViewById(R.id.bar_button);
         barSpinner = view.findViewById(R.id.year_spinner);
 
@@ -192,7 +193,7 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
     public void registerDate() {
         initialize();
         if (!validate()) {
-//            Toast.makeText(this, "Invalid Date Range", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getActivity(), "Invalid Date Range", Toast.LENGTH_SHORT).show();
         }
         else {
             onValidationSuccess();
@@ -294,7 +295,6 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
         @Override
         protected void onPostExecute(String result) {
-            resultTextView.setText(result);
             String json = result;
             ShowPieTask.WatchHistory[] resposne = new Gson().fromJson(json, ShowPieTask.WatchHistory[].class);
 
@@ -307,7 +307,59 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
                 Log.d(TAG, "createPie: " + s.getCountMoviesWatched());
 
             }
-            addDataSet();
+            if (resposne.length > 0 ) {
+                Log.d(TAG, "addDataSet: started");
+
+                ArrayList<PieEntry> yEntriys = new ArrayList<>();
+                ArrayList<String> xEntrys = new ArrayList<>();
+                Log.d(TAG, "addDataSet: yAxisData" + yAxisDataPie);
+
+                for(int i = 0; i < yAxisDataPie.size(); i++) {
+                    yEntriys.add(new PieEntry((yAxisDataPie.get(i)), i));
+                }
+                for(int i = 0; i < xAxisDataPie.size(); i++) {
+                    xEntrys.add(xAxisDataPie.get(i));
+                }
+                // create the dataset
+                PieDataSet pieDataSet = new PieDataSet(yEntriys, "Employee sales");
+                pieDataSet.setSliceSpace(2);
+                pieDataSet.setValueTextSize(12);
+                pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
+                pieChart.setUsePercentValues(true);
+
+                RandomColor randomColor = new RandomColor();
+                int[] colors = randomColor.randomColor(yEntriys.size());
+//
+                pieDataSet.setColors(colors);
+
+
+                Legend legend = pieChart.getLegend();
+                List<LegendEntry> legendEntries = new ArrayList<>();
+
+
+                for (int i = 0; i < xEntrys.size(); i++) {
+                    LegendEntry legendEntry = new LegendEntry();
+                    legendEntry.formColor = colors[i];
+                    legendEntry.label = (xEntrys.get(i));
+                    legendEntries.add(legendEntry);
+                }
+
+                legend.setEnabled(true);
+                legend.setCustom(legendEntries);
+//
+//
+                Description description = new Description();
+                description.setText("Analysing movie watched by suburb");
+                pieChart.setDescription(description);
+//
+
+
+                // Create pie data object
+
+                PieData pieData = new PieData(pieDataSet);
+                pieChart.setData(pieData);
+                pieChart.invalidate();
+            }
         }
 
 
@@ -343,42 +395,7 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     private void addDataSet() {
-        Log.d(TAG, "addDataSet: started");
 
-        ArrayList<PieEntry> yEntriys = new ArrayList<>();
-        ArrayList<String> xEntrys = new ArrayList<>();
-        Log.d(TAG, "addDataSet: yAxisData" + yAxisDataPie);
-
-        for(int i = 0; i < yAxisDataPie.size(); i++) {
-            yEntriys.add(new PieEntry((yAxisDataPie.get(i)), i));
-        }
-        for(int i = 0; i < xAxisDataPie.size(); i++) {
-            xEntrys.add(xAxisDataPie.get(i));
-        }
-        // create the dataset
-        PieDataSet pieDataSet = new PieDataSet(yEntriys, "Employee sales");
-        pieDataSet.setSliceSpace(2);
-        pieDataSet.setValueTextSize(12);
-        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
-        pieChart.setUsePercentValues(true);
-
-        RandomColor randomColor = new RandomColor();
-        int[] colors = randomColor.randomColor(yEntriys.size());
-//
-        pieDataSet.setColors(colors);
-//
-//
-        Description description = new Description();
-        description.setText("Analysing movie watched by suburb");
-        pieChart.setDescription(description);
-//
-
-
-        // Create pie data object
-
-        PieData pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieChart.invalidate();
     }
 
 
@@ -391,6 +408,8 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 //        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
 
         yearSelected = text;
+        yAxisDataBar.clear();
+        xAxisDataBar.clear();
 
         String[] details = {yearSelected};
         if (details.length == 1) {
@@ -423,14 +442,14 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
         @Override
         protected void onPostExecute(String result) {
-            barText.setText(result);
 
 
+//            persing the json object
             String json = result;
-            ReportActivity.MonthHistory[] response = new Gson().fromJson(json, ReportActivity.MonthHistory[].class);
+            MonthHistory[] response = new Gson().fromJson(json, MonthHistory[].class);
 
 
-            for (ReportActivity.MonthHistory s : response) {
+            for (MonthHistory s : response) {
 
                 yAxisDataBar.add(s.getCountMovieWatched());
                 xAxisDataBar.add(s.getMonth());
@@ -438,43 +457,42 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
                 Log.d(TAG, "createBar: " + s.getCountMovieWatched());
             }
 
-//            ArrayList<String> months = new ArrayList<String>();
-//            months.add("January");
-//            months.add("February");
-//            months.add("March");
-//            months.add("April");
-//            months.add("May");
-//            months.add("June");
-//            months.add("July");
-//            months.add("August");
-//            months.add("September");
-//            months.add("October");
-//            months.add("November");
-//            months.add("December");
-//
-//            ArrayList<MonthHistory> orderedMonthHistory= new ArrayList<>();
-//
-//            for (int i = 0; i < months.size(); i++) {
-//                orderedMonthHistory.add(new MonthHistory(months.get(i)));
-//            }
-//            Log.d(TAG, "onPostExecute: orderedMonthHistory populated" + orderedMonthHistory);
-//
-//            for (int i = 0; i < orderedMonthHistory.size(); i++){
-//                for (int j = 0; j < response.length; j++) {
-//                    if (orderedMonthHistory.get(i).getMonth().equals(response[j].getMonth())){
-//                        orderedMonthHistory.get(i).setCountMovieWatched(response[j].getCountMovieWatched());
-//                        break;
-//                    }
-//                    else {
-//                        orderedMonthHistory.get(i).setCountMovieWatched(0);
-//                    }
-//                }
-//            }
+
+
+            ArrayList<BarEntry> yVals = new ArrayList<>();
+
+            for (int i = 0; i < yAxisDataBar.size(); i++){
+                yVals.add(new BarEntry(i, yAxisDataBar.get(i)));
+            }
+
+            BarDataSet barDataSet = new BarDataSet(yVals, "Month count");
+            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+            barDataSet.setDrawValues(true); // values will be shown above the graph
 
 
 
 
-            addDataSetForBar();
+
+
+            Legend legend = barChart.getLegend();
+            List<LegendEntry> legendEntries = new ArrayList<>();
+
+            //   adding legend entries
+            for (int i = 0; i < xAxisDataBar.size(); i++) {
+                LegendEntry legendEntry = new LegendEntry();
+                legendEntry.label = (xAxisDataBar.get(i));
+                legendEntries.add(legendEntry);
+            }
+            legend.setEnabled(true);
+            legend.setCustom(legendEntries);
+
+
+            // Assigning bar data into chart
+            BarData barData = new BarData(barDataSet);
+
+            barChart.setData(barData);
+            barChart.invalidate();
+            barChart.animateY(500);
         }
 
 
@@ -505,22 +523,4 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
         }
     }
 
-    private void addDataSetForBar() {
-        ArrayList<BarEntry> yVals = new ArrayList<>();
-
-        for (int i = 0; i < yAxisDataBar.size(); i++){
-            yVals.add(new BarEntry(i, yAxisDataBar.get(i)));
-        }
-
-        BarDataSet barDataSet = new BarDataSet(yVals, "Month count");
-        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        barDataSet.setDrawValues(true); // values will be shown above the graph
-
-        BarData barData = new BarData(barDataSet);
-
-        barChart.setData(barData);
-        barChart.invalidate();
-        barChart.animateY(500);
-
-    }
 }

@@ -100,20 +100,11 @@
                     android:text="Show Pie Chart"
                     android:layout_height="match_parent"/>
             </LinearLayout>
-            <TextView
-                android:id="@+id/pie_result"
-                android:layout_width="wrap_content"
-                android:text="result"
-                android:layout_height="wrap_content"/>
+
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Line Chart Section Starts"/>
 
 
             <LinearLayout
@@ -145,11 +136,7 @@
                     android:text="Show Bar Chart"/>
 
             </LinearLayout>
-            <TextView
-                android:id="@+id/bar_result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="result"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
