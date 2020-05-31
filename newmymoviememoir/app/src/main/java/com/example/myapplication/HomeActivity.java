@@ -129,11 +129,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 //    maps
     private void getUserGeolocation() {
+
 //        Person person = new Person (1,"Mr Warda", "Mr Warda", "Caulfield", "VIC" , 3174);
+//        String address = "South bank";
 
         String address = personObject.getPerson().getAddress();
         GeoLocation geoLocation = new GeoLocation();
-        geoLocation.getAddress(address, getApplicationContext(),new GeoHandler());
+        geoLocation.getAddress("SouthBank", getApplicationContext(),new GeoHandler());
 
 
     }
