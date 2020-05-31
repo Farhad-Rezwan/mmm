@@ -45,6 +45,21 @@
                 android:id="@+id/v_rate_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/m_add_to_memoir_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add to memoir"/>
+                <Button
+                    android:id="@+id/m_add_to_watchlist_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add to watchlist"/>
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

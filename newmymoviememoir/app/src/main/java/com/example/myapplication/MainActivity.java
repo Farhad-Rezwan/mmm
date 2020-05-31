@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-        // on button click for regester
-        final Button getAllPersonbtn = findViewById(R.id.reg_register_button);
-        getAllPersonbtn.setOnClickListener(new View.OnClickListener() {
+        // on button click for register
+        final Button registerButton = findViewById(R.id.reg_register_button);
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

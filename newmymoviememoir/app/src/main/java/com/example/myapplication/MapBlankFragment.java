@@ -98,13 +98,5 @@ public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-
-
-
-
-
-
-
-
     }
 }

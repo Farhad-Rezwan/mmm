@@ -369,7 +369,7 @@ public class NetworkConnection {
         return results;
     }
 
-///rest/memoir/findRecentHiestRatedMovieGivenPersonID/{personid}
-
+//    {"cinemaname":"Palace Balwyn Cinema","cinemasuburb":"Balwyn"}
+//    /M3/web/rest/cinema
 
 }

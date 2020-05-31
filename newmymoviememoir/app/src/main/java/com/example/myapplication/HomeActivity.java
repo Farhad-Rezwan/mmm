@@ -85,9 +85,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragment(new MovieSearchFragment());
                 break;
                 // will be deleted after adding button here.
-            case R.id.movie_view:
-                replaceFragment(new MovieViewFragment());
-                break;
             case R.id.movie_memoir:
 //                replaceFragment(new MovieViewFragment());
                 break;

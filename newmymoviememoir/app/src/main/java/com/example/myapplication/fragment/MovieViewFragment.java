@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.R;
@@ -21,6 +24,7 @@ public class MovieViewFragment extends Fragment {
     private TextView name, releaseYear, infor;
     private ImageView movieImageIVView;
     private RatingBar rate;
+    private Button buttonToMemoir;
 
     public MovieViewFragment(){
 
@@ -59,6 +63,25 @@ public class MovieViewFragment extends Fragment {
         releaseYear.setText(movieSearch.getReleaseYear());
         infor.setText(movieSearch.getInfor());
         Picasso.get().load(movieSearch.getMovieURL()).into(movieImageIVView);
+
+
+        buttonToMemoir = view.findViewById(R.id.m_add_to_memoir_button);
+        buttonToMemoir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                MemoirAddFragment memoirAddFragment = new MemoirAddFragment();
+
+                Bundle bundleForMemoir = new Bundle();
+                bundleForMemoir.putSerializable("bundleForMemoir", movieSearch);
+                memoirAddFragment.setArguments(bundleForMemoir);
+                fragmentTransaction.replace(R.id.content_frame, memoirAddFragment);
+                fragmentTransaction.commit();
+            }
+        });
+
+
 
 
         return view;
