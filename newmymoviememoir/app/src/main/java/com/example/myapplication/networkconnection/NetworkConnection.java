@@ -351,7 +351,25 @@ public class NetworkConnection {
         return results;
     }
 
+    public String getRecentHighestRatedMovie(String[] params) {
 
+        try {
+            final String methodPath = "rest/memoir/findRecentHiestRatedMovieGivenPersonID/" + params[0];
+            Log.d(TAG, "getRecentHighestRatedMovie: " + methodPath);
+            Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            results=response.body().string();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+///rest/memoir/findRecentHiestRatedMovieGivenPersonID/{personid}
 
 
 }

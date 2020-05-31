@@ -16,15 +16,7 @@ import com.squareup.picasso.Picasso;
 
 public class MovieViewFragment extends Fragment {
 
-//    private RecyclerView mRecyclerView;
-//    private ExampleAdapter mExampleAdapter;
-//    private ArrayList<MovieSearch> mMovieSearchList;
-//    private RequestQueue mRequestQueue;
-
-
     private MovieSearch movieSearch;
-
-
 
     private TextView name, releaseYear, infor;
     private ImageView movieImageIVView;
@@ -46,11 +38,11 @@ public class MovieViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movieview_fragment, container, false);
 
-        name = view.findViewById(R.id.vtitle_view);
-        rate = view.findViewById(R.id.v_rate);
-        releaseYear = view.findViewById(R.id.v_infor);
-        infor = view.findViewById(R.id.v_infor);
-        movieImageIVView = view.findViewById(R.id.vcard_image);
+        name = view.findViewById(R.id.vtitle_view_view);
+        rate = view.findViewById(R.id.v_rate_view);
+        releaseYear = view.findViewById(R.id.vyear_view_view);
+        infor = view.findViewById(R.id.v_infor_view);
+        movieImageIVView = view.findViewById(R.id.vcard_imageView);
 
         name.setText(movieSearch.getMovieName());
 

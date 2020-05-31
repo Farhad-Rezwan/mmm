@@ -19,6 +19,12 @@ public class MovieSearch implements Serializable {
         this.rate = rate;
     }
 
+    public MovieSearch(String movieName, String releaseYear, String rate) {
+        this.movieName = movieName;
+        this.releaseYear = releaseYear;
+        this.rate = rate;
+    }
+
 
     public String getMovieName() {
         return movieName;

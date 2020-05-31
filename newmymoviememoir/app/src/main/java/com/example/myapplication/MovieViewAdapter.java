@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExViewHolder> {
+public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.MovieViewItemViewHolder> {
 
 
     private Context eContext;
@@ -28,19 +28,19 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExViewHo
     private String imageURL, movieName, movieYear, information;
     private String rate;
 
-    public ExampleAdapter(Context context, ArrayList<MovieSearch> movieList) {
+    public MovieViewAdapter(Context context, ArrayList<MovieSearch> movieList) {
         eContext = context;
         eMovieList = movieList;
     }
 
     @Override
-    public ExViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(eContext).inflate(R.layout.example_item, parent, false);
-        return new ExViewHolder(view);
+    public MovieViewItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(eContext).inflate(R.layout.movieview_item, parent, false);
+        return new MovieViewItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ExViewHolder holder, int position) {
+    public void onBindViewHolder(MovieViewItemViewHolder holder, int position) {
         MovieSearch currMovieSearch = eMovieList.get(position);
 
         imageURL = currMovieSearch.getMovieURL();
@@ -87,20 +87,20 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExViewHo
         return eMovieList.size();
     }
 
-    public class ExViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewItemViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView eImageView;
         public TextView eTextViewName;
         public TextView eTextViewYear;
         CardView rootLayout;
 
-        public ExViewHolder( View itemView) {
+        public MovieViewItemViewHolder(View itemView) {
             super(itemView);
 
             eImageView = itemView.findViewById(R.id.mcard_image);
             eTextViewName = itemView.findViewById(R.id.mtitle_view);
             eTextViewYear = itemView.findViewById(R.id.myear_view);
-            rootLayout = itemView.findViewById(R.id.boxid);
+            rootLayout = itemView.findViewById(R.id.root_card_view);
         }
     }
 }

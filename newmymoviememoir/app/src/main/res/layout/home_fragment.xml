@@ -1,12 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView style="@android:style/TextAppearance.Large"
-        android:id="@+id/tv"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/boxid_view"
+    tools:context=".MainActivity">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:textSize="25dp"
-        android:textStyle="bold"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp" >
+        <TextView
+            android:id="@+id/home_title_fixed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:gravity="center"
+            android:textSize="40sp"/>
+
+        <ImageView
+            android:id="@+id/home_picture_fixed"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/mmm"
+            android:requiresFadingEdge="horizontal"/>
+        <TextView
+            android:id="@+id/home_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User name"
+            android:textSize="26sp"></TextView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/home_curr_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Date"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:id="@+id/home_top_movie"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:text="Top Movie Show"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginTop="25dp"
+            android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/home_recycler_v"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

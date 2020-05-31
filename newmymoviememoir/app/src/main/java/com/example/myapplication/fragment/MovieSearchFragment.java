@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.ExampleAdapter;
+import com.example.myapplication.MovieViewAdapter;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.R;
 import com.example.myapplication.networkconnection.SearchGoogleApi;
@@ -38,41 +38,22 @@ public class MovieSearchFragment extends Fragment implements Serializable {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.moviesearch_fragment, container, false);
 
-        final EditText editText=view.findViewById(R.id.ed_keyword);
+        final EditText editText = view.findViewById(R.id.movie_search_edit);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.movie_search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
 
 
-        Button btnSearch = view.findViewById(R.id.btn_search);
+        Button btnSearch = view.findViewById(R.id.movie_search_button);
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 keyword = editText.getText().toString();
 
-
-//                new AsyncTask<String, Void, String>() {
-//                    @Override
-//                    protected String doInBackground(String... params) {
-//                        return SearchGoogleApi.search(keyword, new String[]{"num"},
-//                                new String[]{"3"});
-//                    }
-//
-//                    @Override
-//                    protected void onPostExecute(String result) {
-//                        mMovieSearchList = (ArrayList<MovieSearch>) SearchGoogleApi.getObjects(result);
-//
-//                        recyclerView.setAdapter(new ExampleAdapter(getActivity(), mMovieSearchList));
-//
-//                    }
-//                }.execute();
-
                 AsyncMovieSearch asyncMovieSearch = new AsyncMovieSearch();
                 asyncMovieSearch.execute();
-
-
 
 
             }
@@ -92,7 +73,7 @@ public class MovieSearchFragment extends Fragment implements Serializable {
         protected void onPostExecute(String result) {
             mMovieSearchList = (ArrayList<MovieSearch>) SearchGoogleApi.getObjects(result);
 
-            recyclerView.setAdapter(new ExampleAdapter(getActivity(), mMovieSearchList));
+            recyclerView.setAdapter(new MovieViewAdapter(getActivity(), mMovieSearchList));
 
         }
 
