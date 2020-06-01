@@ -60,6 +60,11 @@
                     android:layout_height="wrap_content"
                     android:text="Add to watchlist"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/room_resting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="To show result"/>
         </LinearLayout>
 
     </ScrollView>

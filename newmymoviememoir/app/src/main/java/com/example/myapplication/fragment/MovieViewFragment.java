@@ -1,5 +1,6 @@
 package com.example.myapplication.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +13,37 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.database.CustomerDatabase;
+import com.example.myapplication.entity.Customer;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.R;
+import com.example.myapplication.viewmodel.CustomerViewModel;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MovieViewFragment extends Fragment {
 
+    CustomerDatabase db = null;
+
     private MovieSearch movieSearch;
 
-    private TextView name, releaseYear, infor;
+    private CustomerDatabase customerDatabase = null;
+
+    private TextView name, releaseYear, infor, roomTest;
     private ImageView movieImageIVView;
     private RatingBar rate;
-    private Button buttonToMemoir;
+    private Button buttonToMemoir, addToWatchlist;
+    CustomerViewModel customerViewModel;
+
+
+    private ArrayList<Customer> customerArrayList;
 
     public MovieViewFragment(){
 
@@ -37,6 +56,8 @@ public class MovieViewFragment extends Fragment {
         //getting bundle value
         Bundle bundle = this.getArguments();
         if (null != bundle) movieSearch = (MovieSearch) bundle.getSerializable("movieSearchResult");
+        customerDatabase = (CustomerDatabase) CustomerDatabase.getInstance(getActivity());
+        customerArrayList = new ArrayList<>();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,9 +68,11 @@ public class MovieViewFragment extends Fragment {
         releaseYear = view.findViewById(R.id.vyear_view_view);
         infor = view.findViewById(R.id.v_infor_view);
         movieImageIVView = view.findViewById(R.id.vcard_imageView);
+        roomTest = view.findViewById(R.id.room_resting);
 
         name.setText(movieSearch.getMovieName());
 
+        db = CustomerDatabase.getInstance(getActivity());
 
 
         rate.setEnabled(false);
@@ -83,8 +106,74 @@ public class MovieViewFragment extends Fragment {
 
 
 
+//        customerViewModel = new ViewModelProvider(this).get(CustomerViewModel.class);
+//        customerViewModel.initalizeVars(getActivity().getApplication());
+//        customerViewModel.getAllCustomers().observe(this, new Observer<List<Customer>>() {
+//            @Override
+//            public void onChanged(List<Customer> customers) {
+//                String allCustomers = "";
+//                for (Customer temp : customers) {
+//                    String customerstr = (temp.getUid() + " " + temp.getFirstName() + " " + temp.getLastName() + " " + temp.getDate());
+//                    allCustomers = allCustomers + System.getProperty("line.separator") + customerstr;
+//                }
+//                roomTest.setText("All data: " + allCustomers);
+//
+//            }
+//
+//        });
+
+
+
+
+
+
+
+
+        addToWatchlist = view.findViewById(R.id.m_add_to_watchlist_button);
+        addToWatchlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!(name.getText().toString().isEmpty())) {
+                    if (!(releaseYear.getText().toString().isEmpty())) {
+
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        Date dateTimeWatched = new Date();
+
+                        String[] details = {name.getText().toString(), releaseYear.getText().toString(), formatter.format(dateTimeWatched)};
+                        if (details.length == 3) {
+                            InsertDatabase addDatabase = new InsertDatabase();
+                            addDatabase.execute(details);
+                        }
+
+                    }
+
+                    //splitting three parts of the text based on the space between them
+
+
+                }
+
+            }
+        });
+
 
         return view;
 
     }
+
+
+    private class InsertDatabase extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            Customer customer = new Customer(params[0], params[1], params[2]);
+            long id = db.customerDao().insert(customer);
+            return (id + " " + params[0] + " " +  params[1] + " " + params[2]);
+        }
+        @Override
+        protected void onPostExecute (String details) {
+            roomTest.setText("Added Record" + details);
+        }
+
+    }
+
+
 }
