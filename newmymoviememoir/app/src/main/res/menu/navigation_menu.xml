@@ -18,4 +18,7 @@
     <item
         android:id="@+id/map_2"
         android:title="Map View"/>
+    <item
+        android:id="@+id/cinema_add"
+        android:title="Add cinema"/>
 </menu>

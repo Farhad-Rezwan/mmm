@@ -29,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.memoirpersoncinemacred.Cinema;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.networkconnection.NetworkConnection;
 import com.google.gson.JsonArray;
@@ -47,8 +48,9 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
     NetworkConnection networkConnection = null;
 
     private MovieSearch movieSearch;
+    private Cinema cinema;
 
-    private TextView name, releaseYear, rating, watchDate, watchTime;
+    private TextView name, releaseYear, rating, watchDate, watchTime, choosenCinema;
     private Spinner cinemaChoise;
     private EditText addComment;
     private Button addCinemaBtn, addMemoirBtn;
@@ -57,14 +59,19 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
 
     ArrayList<String> cinemaName;
 //    private TimePickerDialog.OnTimeSetListener memoirTimeSetListener;
+    public MemoirAddFragment() {
 
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        if (null != bundle) movieSearch = (MovieSearch) bundle.getSerializable("bundleForMemoir");
+        if (null != bundle) {
+            movieSearch = (MovieSearch) bundle.getSerializable("bundleForMemoir");
+        }
+        if (null != bundle) cinema = (Cinema) bundle.getSerializable("CinemaAdd");
     }
 
     @Nullable
@@ -78,6 +85,7 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         releaseYear = view.findViewById(R.id.memoir_add_date_tv);
         rating = view.findViewById(R.id.memoir_add_rating_tv);
         addComment = view.findViewById(R.id.memoir_add_comment);
+        choosenCinema = view.findViewById(R.id.choosen_cinema);
 
 
         name.setText(movieSearch.getMovieName());
@@ -141,20 +149,11 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         });
 
 
-        // spinner cinema choice
-//        cinemaChoise = view.findViewById(R.id.memoir_add_cinema_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()), R.array.states, android.R.layout.simple_spinner_dropdown_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        cinemaChoise.setAdapter(adapter);
-//        cinemaChoise.setOnItemSelectedListener(this);
-
+        if (cinema != null) {
+            choosenCinema.setText(cinema.getCinemaname());
+        }
 
         cinemaName = new ArrayList<>();
-
-
-
-
-
 
 
         cinemaChoise = view.findViewById(R.id.memoir_add_cinema_spinner);
@@ -181,7 +180,15 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
                 FragmentManager fragmentManager = (getActivity()).getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+
+
+
                 CinemaAddFragment cinemaAddFragment = new CinemaAddFragment();
+
+                Bundle bundleForMemoir = new Bundle();
+                bundleForMemoir.putSerializable("movieSearchForMem", movieSearch);
+                cinemaAddFragment.setArguments(bundleForMemoir);
+
                 fragmentTransaction.replace(R.id.content_frame, cinemaAddFragment);
                 fragmentTransaction.commit();
 
@@ -189,6 +196,12 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         });
 
         addMemoirBtn = view.findViewById(R.id.memoir_add_button);
+        addMemoirBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
         return view;

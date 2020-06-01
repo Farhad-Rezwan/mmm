@@ -2,7 +2,9 @@ package com.example.myapplication.networkconnection;
 
 import android.util.Log;
 
+import com.example.myapplication.memoirpersoncinemacred.Cinema;
 import com.example.myapplication.memoirpersoncinemacred.Credential;
+import com.example.myapplication.memoirpersoncinemacred.Memoir;
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.save.PersonObject;
 import com.google.gson.Gson;
@@ -13,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -371,5 +374,116 @@ public class NetworkConnection {
 
 //    {"cinemaname":"Palace Balwyn Cinema","cinemasuburb":"Balwyn"}
 //    /M3/web/rest/cinema
+
+    public String addCinema(String[] details){
+        String strResponse = "";
+        try {
+
+            Cinema cinema = new Cinema(details[0], details[1]);
+
+            Gson gson = new Gson();
+
+            String personJson = gson.toJson(cinema);
+
+            //this is for testing, you can check how the json looks like in Logcat
+            Log.i("json " , personJson);
+            final String methodPath = "rest/cinema/";
+            RequestBody body = RequestBody.create(personJson, JSON);
+            Request request = new Request.Builder().url(BASE_URL + methodPath).post(body).build();
+
+
+
+            Response response= client.newCall(request).execute();
+            Log.i("json " , response.getClass().getTypeName());
+            strResponse= response.body().string();
+
+            Log.i("response " , strResponse);
+
+
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return strResponse ;
+
+
+    }
+
+    public String showMemoir(String[] details) {
+
+        try {
+            final String methodPath = "rest/memoir/findByPersonID/" + details[0];
+            Log.d(TAG, "getRecentHighestRatedMovie: " + methodPath);
+            Request.Builder builder = new Request.Builder(); builder.url(BASE_URL + methodPath);
+            Request request = builder.build();
+
+            Response response = client.newCall(request).execute();
+            results=response.body().string();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+
+    // need to be edited
+
+    public static ArrayList<Memoir> getObjects(String res) {
+
+        ArrayList<Memoir> result = new ArrayList<Memoir>();
+
+
+        try{
+            JSONObject jsonObject = new JSONObject(res);
+            JSONArray jsonArray = jsonObject.getJSONArray("cinemaid");
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject item = jsonArray.getJSONObject(i);
+                JSONObject pagemap = item.getJSONObject("pagemap");
+                JSONArray cse_thumbnails  = pagemap.getJSONArray("cse_thumbnail");
+                JSONArray aggregaterating = pagemap.getJSONArray("aggregaterating");
+                JSONObject cse_thumbnail = cse_thumbnails.getJSONObject(0);
+                JSONObject rateObject = aggregaterating.getJSONObject(0);
+                String url = cse_thumbnail.getString("src");
+                JSONArray metatags = pagemap.getJSONArray("metatags");
+                JSONObject metatag = metatags.getJSONObject(0);
+
+
+                //          Getting basic informations...
+                String title = metatag.getString("title");
+                String infor = metatag.getString("og:description");
+                String rate = rateObject.getString("ratingvalue");
+
+
+                String year = title.split("[\\(\\)]")[1];
+                String tit =  title.split("[\\(\\)]")[0];
+
+                result.add(new Memoir(1));
+
+                Log.d(TAG, "getObjects: " + url + tit + year);
+
+
+
+            }
+            if(jsonArray != null && jsonArray.length() > 0) {
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        return result;
+
+    }
+
+
+
 
 }

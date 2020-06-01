@@ -1,5 +1,7 @@
 package com.example.myapplication.memoirpersoncinemacred;
 
+import android.text.Editable;
+
 import java.io.Serializable;
 
 public class Cinema implements Serializable {
