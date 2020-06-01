@@ -4,62 +4,62 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.myapplication.dao.CustomerDAO;
-import com.example.myapplication.database.CustomerDatabase;
-import com.example.myapplication.entity.Customer;
+import com.example.myapplication.dao.WatchListDAO;
+import com.example.myapplication.database.WatchListDatabase;
+import com.example.myapplication.entity.MovieEntity;
 
 import java.util.List;
 
 public class CustomerRepository {
-    private CustomerDAO dao;
-    private LiveData<List<Customer>> allCustomers; private Customer customer;
+    private WatchListDAO dao;
+    private LiveData<List<MovieEntity>> allCustomers; private MovieEntity movieEntity;
     public CustomerRepository(Application application){
-        CustomerDatabase db = CustomerDatabase.getInstance(application); dao=db.customerDao();
+        WatchListDatabase db = WatchListDatabase.getInstance(application); dao=db.customerDao();
     }
-    public LiveData<List<Customer>> getAllCustmers() {
+    public LiveData<List<MovieEntity>> getAllCustmers() {
 
-        allCustomers = (LiveData<List<Customer>>) dao.getAll();
+        allCustomers = (LiveData<List<MovieEntity>>) dao.getAll();
 
         return allCustomers;
     }
-    public void insert(final Customer customer){
-        CustomerDatabase.databaseWriteExecutor.execute(new Runnable() {
+    public void insert(final MovieEntity movieEntity){
+        WatchListDatabase.databaseWriteExecutor.execute(new Runnable() {
         @Override
-        public void run() { dao.insert(customer);
+        public void run() { dao.insert(movieEntity);
         } });
     }
     public void deleteAll(){
-        CustomerDatabase.databaseWriteExecutor.execute(new Runnable() {
+        WatchListDatabase.databaseWriteExecutor.execute(new Runnable() {
         @Override
         public void run() {
             dao.deleteAll(); }
     }); }
-    public void delete(final Customer customer){
-        CustomerDatabase.databaseWriteExecutor.execute(new Runnable() {
+    public void delete(final MovieEntity movieEntity){
+        WatchListDatabase.databaseWriteExecutor.execute(new Runnable() {
         @Override
         public void run() {
-            dao.delete(customer); }
+            dao.delete(movieEntity); }
     });
     }
-    public void insertAll(final Customer... customers){
-        CustomerDatabase.databaseWriteExecutor.execute(new Runnable() {
+    public void insertAll(final MovieEntity... movieEntities){
+        WatchListDatabase.databaseWriteExecutor.execute(new Runnable() {
             @Override
-            public void run() { dao.insertAll(customers); }
+            public void run() { dao.insertAll(movieEntities); }
         }); }
 
-    public void updateCustomers(final Customer... customers){ CustomerDatabase.databaseWriteExecutor.execute(new Runnable() {
+    public void updateCustomers(final MovieEntity... movieEntities){ WatchListDatabase.databaseWriteExecutor.execute(new Runnable() {
         @Override
-        public void run() { dao.updateCustomers(customers); }
+        public void run() { dao.updateCustomers(movieEntities); }
     });
     }
-    public Customer findByID(final int customerId){
-        CustomerDatabase.databaseWriteExecutor.execute(new Runnable() { @Override
+    public MovieEntity findByID(final int customerId){
+        WatchListDatabase.databaseWriteExecutor.execute(new Runnable() { @Override
         public void run() {
-            Customer runCustomer= dao.findByID(customerId); setCustomer(runCustomer);
+            MovieEntity runMovieEntity = dao.findByID(customerId); setMovieEntity(runMovieEntity);
         } });
-        return customer;
+        return movieEntity;
     }
-    public void setCustomer(Customer customer){
-        this.customer=customer;
+    public void setMovieEntity(MovieEntity movieEntity){
+        this.movieEntity = movieEntity;
     }
 }

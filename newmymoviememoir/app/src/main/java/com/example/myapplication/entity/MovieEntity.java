@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Customer {
+public class MovieEntity {
     @PrimaryKey(autoGenerate = true)
     public int uid;
     @ColumnInfo(name = "first_name")
@@ -15,7 +15,7 @@ public class Customer {
     @ColumnInfo(name = "date")
     public String date;
 
-    public Customer(String firstName, String lastName, String date) {
+    public MovieEntity(String firstName, String lastName, String date) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.date = date;

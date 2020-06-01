@@ -13,11 +13,9 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.database.CustomerDatabase;
-import com.example.myapplication.entity.Customer;
+import com.example.myapplication.database.WatchListDatabase;
+import com.example.myapplication.entity.MovieEntity;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.R;
 import com.example.myapplication.viewmodel.CustomerViewModel;
@@ -26,15 +24,14 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class MovieViewFragment extends Fragment {
 
-    CustomerDatabase db = null;
+    WatchListDatabase db = null;
 
     private MovieSearch movieSearch;
 
-    private CustomerDatabase customerDatabase = null;
+    private WatchListDatabase watchListDatabase = null;
 
     private TextView name, releaseYear, infor, roomTest;
     private ImageView movieImageIVView;
@@ -43,7 +40,7 @@ public class MovieViewFragment extends Fragment {
     CustomerViewModel customerViewModel;
 
 
-    private ArrayList<Customer> customerArrayList;
+    private ArrayList<MovieEntity> movieEntityArrayList;
 
     public MovieViewFragment(){
 
@@ -56,8 +53,8 @@ public class MovieViewFragment extends Fragment {
         //getting bundle value
         Bundle bundle = this.getArguments();
         if (null != bundle) movieSearch = (MovieSearch) bundle.getSerializable("movieSearchResult");
-        customerDatabase = (CustomerDatabase) CustomerDatabase.getInstance(getActivity());
-        customerArrayList = new ArrayList<>();
+        watchListDatabase = (WatchListDatabase) WatchListDatabase.getInstance(getActivity());
+        movieEntityArrayList = new ArrayList<>();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +69,7 @@ public class MovieViewFragment extends Fragment {
 
         name.setText(movieSearch.getMovieName());
 
-        db = CustomerDatabase.getInstance(getActivity());
+        db = WatchListDatabase.getInstance(getActivity());
 
 
         rate.setEnabled(false);
@@ -164,8 +161,8 @@ public class MovieViewFragment extends Fragment {
     private class InsertDatabase extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            Customer customer = new Customer(params[0], params[1], params[2]);
-            long id = db.customerDao().insert(customer);
+            MovieEntity movieEntity = new MovieEntity(params[0], params[1], params[2]);
+            long id = db.customerDao().insert(movieEntity);
             return (id + " " + params[0] + " " +  params[1] + " " + params[2]);
         }
         @Override

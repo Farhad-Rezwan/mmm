@@ -6,33 +6,33 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.myapplication.entity.Customer;
+import com.example.myapplication.entity.MovieEntity;
 import com.example.myapplication.repository.CustomerRepository;
 
 import java.util.List;
 
 public class CustomerViewModel extends ViewModel {
     private CustomerRepository cRepository;
-    private MutableLiveData<List<Customer>> allCustomers;
+    private MutableLiveData<List<MovieEntity>> allCustomers;
     public CustomerViewModel () { allCustomers=new MutableLiveData<>();
     }
-    public void setCustomers(List<Customer> customers) { allCustomers.setValue(customers);
+    public void setCustomers(List<MovieEntity> movieEntities) { allCustomers.setValue(movieEntities);
     }
-    public LiveData<List<Customer>> getAllCustomers() { return cRepository.getAllCustmers();
+    public LiveData<List<MovieEntity>> getAllCustomers() { return cRepository.getAllCustmers();
     }
     public void initalizeVars(Application application){ cRepository = new CustomerRepository(application);
     }
-    public void insert(Customer customer) { cRepository.insert(customer);
+    public void insert(MovieEntity movieEntity) { cRepository.insert(movieEntity);
     }
-    public void insertAll(Customer... customers) { cRepository.insertAll(customers);
+    public void insertAll(MovieEntity... movieEntities) { cRepository.insertAll(movieEntities);
     }
     public void deleteAll() { cRepository.deleteAll();
     }
-    public void insertAll(Customer customer) { cRepository.delete(customer);
+    public void insertAll(MovieEntity movieEntity) { cRepository.delete(movieEntity);
     }
-    public void update(Customer... customers) {
-        cRepository.updateCustomers(customers); }
-    public Customer insertAll(int id) { return cRepository.findByID(id);
+    public void update(MovieEntity... movieEntities) {
+        cRepository.updateCustomers(movieEntities); }
+    public MovieEntity insertAll(int id) { return cRepository.findByID(id);
     }
-    public Customer findByID(int customerId){ return cRepository.findByID(customerId);
+    public MovieEntity findByID(int customerId){ return cRepository.findByID(customerId);
     } }
