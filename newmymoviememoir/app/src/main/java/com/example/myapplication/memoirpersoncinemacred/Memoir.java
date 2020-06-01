@@ -6,7 +6,7 @@ import java.util.Date;
 public class Memoir {
     private Integer memoirid;
     private String moviename;
-    private Date moviereleasedate;
+    private Date] moviereleasedate;
     private Date datetimewatched;
     private String comment;
     private BigDecimal rating;

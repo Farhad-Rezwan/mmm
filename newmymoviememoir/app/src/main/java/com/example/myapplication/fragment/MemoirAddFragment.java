@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -31,13 +30,20 @@ import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.memoirpersoncinemacred.Cinema;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
+import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.NetworkConnection;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSelectedListener{
@@ -54,6 +60,7 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
     private Spinner cinemaChoise;
     private EditText addComment;
     private Button addCinemaBtn, addMemoirBtn;
+    private String movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr;
 
     private DatePickerDialog.OnDateSetListener memoirDateSetListener;
 
@@ -200,11 +207,80 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
             @Override
             public void onClick(View v) {
 
+                register();
+
             }
         });
 
 
         return view;
+
+    }
+
+    public void register() {
+        initialize();
+        if (!validate()) {
+            Toast.makeText(getActivity(), "Memory add has failed", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            onRegisterSuccess();
+        }
+
+    }
+
+    public void initialize() {
+        movieNameStr = name.getText().toString().trim();
+        releaseDateStr = releaseYear.getText().toString().trim();
+        ratingStr = rating.getText().toString().trim();
+        dateTimeWatchedStr = watchDate.getText().toString().trim() + watchTime.getText().toString().trim();
+        cinemaNameStr = cinemaName.toString();
+        commentStr = choosenCinema.getText().toString();
+    }
+
+    public void onRegisterSuccess() {
+
+        String[] details = {movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr};
+        if (details.length == 6) {
+            AddMemoirTask addMemoirTask = new AddMemoirTask();
+            addMemoirTask.execute(details);
+        }
+    }
+
+    private class AddMemoirTask extends AsyncTask<String, Void, String>{
+        @Override
+        protected String doInBackground(String... params) {
+            String result= "The movie with name: " + params[0] + " was added";
+            Log.d(TAG, "doInBackground: " + result);
+            return networkConnection.addMemoir(params);
+        }
+        @Override
+        protected void onPostExecute (String result) {
+            Person person = null;
+
+        }
+    }
+
+
+
+    public boolean validate() {
+        boolean valid = true;
+        if (movieNameStr.isEmpty() || movieNameStr.length() > 32){
+            name.setError("Please enter valid first name");
+            valid = false;
+        }
+        if (releaseDateStr.isEmpty() || releaseDateStr.length() > 32){
+            releaseYear.setError("Please enter valid sur name");
+            valid = false;
+        }
+        if (cinemaNameStr.isEmpty() || cinemaNameStr.length() > 70){
+            choosenCinema.setError("Please enter valid address");
+            valid = false;
+        }
+        if (commentStr.isEmpty() || commentStr.length() > 70){
+            addComment.setError("Please enter valid address");
+            valid = false;
+        }
+        return valid;
 
     }
 
