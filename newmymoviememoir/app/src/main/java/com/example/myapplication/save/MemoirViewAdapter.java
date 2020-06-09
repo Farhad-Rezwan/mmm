@@ -38,8 +38,8 @@ public class MemoirViewAdapter extends RecyclerView.Adapter<MemoirViewAdapter.Me
     private Context eContext;
     private ArrayList<Memoir> eMemoirList;
     private String moviename;
-    private Date moviereleasedate;
-    private Date datetimewatched;
+    private String moviereleasedate;
+    private String datetimewatched;
     private String comment;
     private BigDecimal rating;
     private String suburb;

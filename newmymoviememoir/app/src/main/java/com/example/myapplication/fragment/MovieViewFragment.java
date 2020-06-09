@@ -120,12 +120,6 @@ public class MovieViewFragment extends Fragment {
 //        });
 
 
-
-
-
-
-
-
         addToWatchlist = view.findViewById(R.id.m_add_to_watchlist_button);
         addToWatchlist.setOnClickListener(new View.OnClickListener() {
             @Override

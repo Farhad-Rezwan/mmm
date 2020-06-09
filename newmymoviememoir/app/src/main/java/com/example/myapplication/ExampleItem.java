@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+
+
+// class not used for the assignment.
 public class ExampleItem {
     private String movieName;
     private String releaseYear;

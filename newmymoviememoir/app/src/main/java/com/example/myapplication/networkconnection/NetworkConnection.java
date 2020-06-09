@@ -78,7 +78,7 @@ public class NetworkConnection {
 
 
 
-
+            // for getting the max id from the server
             String maxID;
             maxID = getMaxID();
             Log.i("String maxid", "maxid: " + maxID);
@@ -95,13 +95,14 @@ public class NetworkConnection {
             int postcode = Integer.parseInt(details[7]);
             int personid = Integer.parseInt(maxID) + 1;
 
+
+
             Person person = new Person(details[1], details[2], details[3].charAt(0), sqlStartDate, details[5], details[6], postcode);
 
 
 
-
+            // building json for request
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-
             String personJson = gson.toJson(person);
             String strResponse = "";
             //this is for testing, you can check how the json looks like in Logcat
@@ -121,9 +122,12 @@ public class NetworkConnection {
 
 
 
-
+            // adding the new person id, uses max value
             person.setPersonid(personid);
 
+
+
+            // password hashing part
             String plaintext = details[9];
             MessageDigest m = null;
             m = MessageDigest.getInstance("MD5");
@@ -142,7 +146,7 @@ public class NetworkConnection {
             }
 
 
-
+            //
             java.sql.Date curSignUpDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 
 
@@ -266,12 +270,13 @@ public class NetworkConnection {
             }
 
 
+            // password hashing part.
             m.reset();
             m.update(plaintext.getBytes());
             byte[] digest = m.digest();
             BigInteger bigInt = new BigInteger(1,digest);
             String hashtext = bigInt.toString(16);
-// Now we need to zero pad it if you actually want the full 32 chars.
+            // Now we need to zero pad it if you actually want the full 32 chars.
             while(hashtext.length() < 32 ){
                 hashtext = "0"+hashtext;
             }
@@ -298,7 +303,7 @@ public class NetworkConnection {
 
 
 
-//            x = 0 means not found
+            //    x = 0 means not found
             if (x == 1){
                 JsonObject jobject = jarray.get(0).getAsJsonObject();
 
@@ -485,130 +490,30 @@ public class NetworkConnection {
 
 
 
-    public String addMemoir(String[] details){
+    public String addMemoir(Memoir details){
 
+        Gson gson = new Gson();
+        String memoirJSON = gson.toJson(details);
+        String strResponse="";
+        final String methodPath = "/rest/memoir/";
+        RequestBody body = RequestBody.create(memoirJSON, JSON);
+        Request request = new Request.Builder().url(BASE_URL + methodPath).post(body).build();
         try {
-            SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
-            Date date = null;
-            java.sql.Date sqlStartDate = null;
-
-
-
-            date = sdf1.parse(details[4]);
-            sqlStartDate = new java.sql.Date(date.getTime());
-
-
-
-
-            String maxID;
-            maxID = getMaxID();
-            Log.i("String maxid", "maxid: " + maxID);
-
-
-            JsonElement jelement = new JsonParser().parse(maxID);
-            JsonArray jarray = jelement.getAsJsonArray();
-            JsonObject jobject = jarray.get(0).getAsJsonObject();
-            maxID = jobject.get("ID").getAsString();
-
-
-            Log.i("String maxid", "maxid: " + maxID);
-
-            int postcode = Integer.parseInt(details[7]);
-            int personid = Integer.parseInt(maxID) + 1;
-
-            Person person = new Person(details[1], details[2], details[3].charAt(0), sqlStartDate, details[5], details[6], postcode);
-
-
-
-
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-
-            String personJson = gson.toJson(person);
-            String strResponse = "";
-            //this is for testing, you can check how the json looks like in Logcat
-            Log.i("json " , personJson);
-            final String methodPath = "rest/person/";
-            RequestBody body = RequestBody.create(personJson, JSON);
-            Request request = new Request.Builder().url(BASE_URL + methodPath).post(body).build();
-
-
-
             Response response= client.newCall(request).execute();
-            Log.i("json " , response.getClass().getTypeName());
             strResponse= response.body().string();
-
-            Log.i("json " , strResponse);
-
-
-
-
-
-            person.setPersonid(personid);
-
-            String plaintext = details[9];
-            MessageDigest m = null;
-            m = MessageDigest.getInstance("MD5");
-
-
-
-
-            m.reset();
-            m.update(plaintext.getBytes());
-            byte[] digest = m.digest();
-            BigInteger bigInt = new BigInteger(1,digest);
-            String hashtext = bigInt.toString(16);
-            // Now we need to zero pad it if you actually want the full 32 chars.
-            while(hashtext.length() < 32 ){
-                hashtext = "0"+hashtext;
-            }
-
-
-
-            java.sql.Date curSignUpDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-
-
-
-            Credential credential = new Credential(details[8], hashtext, curSignUpDate);
-            credential.setPersonid(person);
-
-            String credentialJson = gson.toJson(credential);
-            //this is for testing, you can check how the json looks like in Logcat
-            Log.i("json " , credentialJson);
-            final String methodPathCred = "rest/credential/";
-            RequestBody body2 = RequestBody.create(credentialJson, JSON);
-            Request request2 = new Request.Builder().url(BASE_URL + methodPathCred).post(body2).build();
-
-
-            Response response2= client.newCall(request2).execute();
-            Log.i("json " , response2.getClass().getTypeName());
-            strResponse= response2.body().string();
-
-            Log.i("json " , strResponse);
-
-
-//            public Person(int personid, String firstname, String surname, Character gender, Date dob, String address, String stateau, int postcode)
-//            Person personToStore = new Person(personid, details[1], details[2], details[3].charAt(0), sqlStartDate, details[5], details[6], postcode);
-//
-//            PersonObject personObject = new PersonObject();
-//            personObject.setPerson(personToStore);
-
-
-
-            // checking username and password maches already or not.
-            String[] params = {credential.getUsername(), details[9]};
-            results = credentialCheck(params);
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
+        Log.d(TAG, "memoirData: Name: " + strResponse);
 
 
-        return results ;
+        return strResponse;
+
+
+
+
 
 
     }

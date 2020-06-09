@@ -29,14 +29,17 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.memoirpersoncinemacred.Cinema;
+import com.example.myapplication.memoirpersoncinemacred.Memoir;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
 import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.example.myapplication.save.PersonObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,8 +66,10 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
     private String movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr;
 
     private DatePickerDialog.OnDateSetListener memoirDateSetListener;
+    private PersonObject personObject;
 
     ArrayList<String> cinemaName;
+
 //    private TimePickerDialog.OnTimeSetListener memoirTimeSetListener;
     public MemoirAddFragment() {
 
@@ -98,6 +103,8 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         name.setText(movieSearch.getMovieName());
         releaseYear.setText(movieSearch.getReleaseYear());
         rating.setText("IMDb rating: " + movieSearch.getRate());
+        personObject = (PersonObject) getActivity().getApplicationContext();
+
 
         // date picker for adding watch date
 
@@ -239,22 +246,26 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
 
     public void onRegisterSuccess() {
 
-        String[] details = {movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr};
-        if (details.length == 6) {
-            AddMemoirTask addMemoirTask = new AddMemoirTask();
-            addMemoirTask.execute(details);
-        }
+        BigDecimal bigDecimalRate = new BigDecimal(ratingStr);
+
+        Memoir memoir = new Memoir(movieNameStr,releaseDateStr, dateTimeWatchedStr, commentStr, bigDecimalRate, 1, personObject.getPerson().getPersonid());
+//        String moviename, String moviereleasedate, String datetimewatched, String comment, BigDecimal rating, int cinemaid, int personid
+
+//        String[] details = {movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr};
+
+        AddMemoirTask addMemoirTask = new AddMemoirTask();
+        addMemoirTask.execute(memoir);
     }
 
-    private class AddMemoirTask extends AsyncTask<String, Void, String>{
+    private class AddMemoirTask extends AsyncTask<Memoir, Void, String>{
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Memoir... params) {
             String result= "The movie with name: " + params[0] + " was added";
             Log.d(TAG, "doInBackground: " + result);
-            return networkConnection.addMemoir(params);
+            return networkConnection.addMemoir(params[0]);
         }
         @Override
-        protected void onPostExecute (String result) {
+        protected void onPostExecute (String details) {
             Person person = null;
 
         }
@@ -288,7 +299,8 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         String[] methodName = {"getAllCinemaNameAndSuburb"};
         GetCinemas getCinemaSuburb = new GetCinemas();
         getCinemaSuburb.execute(methodName);
-        }
+
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -302,34 +314,73 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
 
     private class GetCinemas extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(String... params) {
-            String result = "task name: " + params[0];
-            Log.d(TAG, "doInBackground: " + result);
-            return networkConnection.getAllCinemaNameSuburb(params);
+    protected String doInBackground(String... params) {
+        String result = "task name: " + params[0];
+        Log.d(TAG, "doInBackground: " + result);
+        return networkConnection.getAllCinemaNameSuburb(params);
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+
+
+        JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
+
+        JsonObject jsonObject;
+
+        int arraySize = jsonArray.size();
+        for (int i = 0; i < arraySize; i++) {
+            jsonObject = jsonArray.get(i).getAsJsonObject();
+            Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
+            String cinemaname = jsonObject.get("cinemaname").getAsString();
+            cinemaName.add(cinemaname);
+
+            cinemaChoise.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cinemaName));
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-
-
-            JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
-
-            JsonObject jsonObject;
-
-            int arraySize = jsonArray.size();
-            for (int i = 0; i < arraySize; i++) {
-                jsonObject = jsonArray.get(i).getAsJsonObject();
-                Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
-                String cinemaname = jsonObject.get("cinemaname").getAsString();
-                cinemaName.add(cinemaname);
-
-                cinemaChoise.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cinemaName));
-            }
-
-
-        }
 
     }
+
+
+    }
+
+
+
+//    private class GetCinemaID extends AsyncTask<String, Void, String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String result = "task name: " + params[0];
+//            Log.d(TAG, "doInBackground: " + result);
+//            return networkConnection.getAllCinemaNameSuburb(params);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//
+//
+//            JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
+//
+//            JsonObject jsonObject;
+//
+//            int arraySize = jsonArray.size();
+//            for (int i = 0; i < arraySize; i++) {
+//                jsonObject = jsonArray.get(i).getAsJsonObject();
+//                Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
+//                String cinemaname = jsonObject.get("cinemaname").getAsString();
+//                cinemaName.add(cinemaname);
+//
+//                cinemaChoise.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cinemaName));
+//            }
+//
+//
+//        }
+//
+//
+//    }
+
+
+
+
 }
 
 

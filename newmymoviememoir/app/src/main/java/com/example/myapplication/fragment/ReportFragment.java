@@ -129,6 +129,8 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 //        description.setTextColor(ColorTemplate.VORDIPLOM_COLORS[2]);
 //        description.setText(getString(R.string.pieDescription));
 //        pieChart.setDescription(description);
+
+
         pieChart.setRotationEnabled(true);
 
         pieChart.setHoleRadius(25f);
@@ -136,10 +138,11 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
         pieChart.setCenterText("Cinema Suburb Preference");
         pieChart.setCenterTextSize(10);
         pieChart.setDrawEntryLabels(true);
-
-
-
         pieChart.setTouchEnabled(true);
+
+
+
+
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         pieChart.setMarker(mv);
 
@@ -163,11 +166,12 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
 
 
-
-
-
-        //        Everything of Bar Chart
+        //  Everything of Bar Chart
+        // bar button to show the bar chart
         barButton = view.findViewById(R.id.bar_button);
+
+
+        //  year spinner to add assign year
         barSpinner = view.findViewById(R.id.year_spinner);
 
 
@@ -175,20 +179,20 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()), R.array.year_array, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
         barSpinner.setAdapter(adapter);
         barSpinner.setOnItemSelectedListener(this);
-
         barChart = (BarChart) view.findViewById(R.id.bar_chart);
         barChart.getDescription().setEnabled(false);
         barChart.setFitBars(true);
-
-
 
 
         return view;
     }
 
 
+    //  validates the date rages after innitializing the values before taking data for chart
 
     public void registerDate() {
         initialize();
@@ -200,11 +204,14 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
         }
 
     }
+
     public void onValidationSuccess() {
         Log.d(TAG, "onRegisterSuccess: ");
 
     }
 
+
+    // validates the date range.
     public boolean validate() {
         boolean valid = true;
 
@@ -242,6 +249,8 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
     }
 
+
+    // innitializes the values of dates.
     public void initialize() {
         startDate = startTextView.getText().toString();
         endDate = endTextView.getText().toString();
@@ -285,6 +294,7 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
 
+    // Async task for fetching the data form the Rest server, and when post executes, the pie chart
     private class ShowPieTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -320,6 +330,9 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
                 for(int i = 0; i < xAxisDataPie.size(); i++) {
                     xEntrys.add(xAxisDataPie.get(i));
                 }
+
+
+
                 // create the dataset
                 PieDataSet pieDataSet = new PieDataSet(yEntriys, "Employee sales");
                 pieDataSet.setSliceSpace(2);
@@ -327,16 +340,17 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
                 pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
                 pieChart.setUsePercentValues(true);
 
+
+                // getting random color values
                 RandomColor randomColor = new RandomColor();
                 int[] colors = randomColor.randomColor(yEntriys.size());
-//
                 pieDataSet.setColors(colors);
 
-
+                // defining the legend for chart
                 Legend legend = pieChart.getLegend();
                 List<LegendEntry> legendEntries = new ArrayList<>();
 
-
+                // assigning color to separate labels
                 for (int i = 0; i < xEntrys.size(); i++) {
                     LegendEntry legendEntry = new LegendEntry();
                     legendEntry.formColor = colors[i];
@@ -344,14 +358,13 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
                     legendEntries.add(legendEntry);
                 }
 
+
+
                 legend.setEnabled(true);
                 legend.setCustom(legendEntries);
-//
-//
                 Description description = new Description();
                 description.setText("Analysing movie watched by suburb");
                 pieChart.setDescription(description);
-//
 
 
                 // Create pie data object
@@ -364,7 +377,7 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
 
 
-
+        // to save data of cinema suburb and watch count
         public class WatchHistory {
             private String cinemaSuburb;
             private int countMoviesWatched;
@@ -394,16 +407,12 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
     }
 
-    private void addDataSet() {
-
-    }
 
 
-    //for spinner
+    // for bar chart spinner on item selected
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
-
 
 //        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
 
@@ -417,11 +426,6 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
             showBar.execute(details);
         }
 
-
-
-
-
-
     }
 
     @Override
@@ -431,7 +435,7 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
 
 
-
+    // async task to show the bar, gets data from the Rest and when success assigns data, and lagend for the chart
     private class ShowBar extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -497,6 +501,8 @@ public class ReportFragment extends Fragment implements AdapterView.OnItemSelect
 
 
     }
+
+    // for saving data for month and movie watch per month for that year
     public class MonthHistory {
         private String month;
         private int countMovieWatched;

@@ -47,6 +47,8 @@ public class CinemaAddFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = this.getArguments();
+
+        // using the bundle to transfer movieSearch object.
         if (null != bundle) movieSearch = (MovieSearch) bundle.getSerializable("bundleForMemoir");
     }
 
@@ -67,6 +69,8 @@ public class CinemaAddFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
+                // this method validates whether cinema is added or not.
                 addCinema();
             }
         });
@@ -74,12 +78,14 @@ public class CinemaAddFragment extends Fragment {
         return view;
     }
 
+    // innitialising the cinema.
     public void addCinema() {
         initialize();
         if (!validate()) {
             Toast.makeText(getActivity(), "Cinema has failed", Toast.LENGTH_SHORT).show();
         }
         else {
+
             onCinemaAddSuccess();
         }
     }
@@ -102,6 +108,8 @@ public class CinemaAddFragment extends Fragment {
         return valid;
 
     }
+
+    // starts the async task for adding the cinema
     public void onCinemaAddSuccess() {
 
         String[] details = {cName, cSuburb};
@@ -148,6 +156,9 @@ public class CinemaAddFragment extends Fragment {
 
         }
     }
+
+
+    // when the cinema regestration succeed, this method starts the Fragment Transaction
     public void onCinemaRegestrationSuccess() {
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
