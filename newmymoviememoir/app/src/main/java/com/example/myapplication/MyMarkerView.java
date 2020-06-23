@@ -12,7 +12,8 @@ import com.github.mikephil.charting.utils.Utils;
 
 public class MyMarkerView extends MarkerView {
     private TextView tvContent;
-    public MyMarkerView(Context context, int layoutResource) { super(context, layoutResource);
+    public MyMarkerView(Context context, int layoutResource) {
+        super(context, layoutResource);
         tvContent = findViewById(R.id.tvContent);
     }
     // callbacks everytime the MarkerView is redrawn, can be used to update the // content (user-interface)
@@ -24,9 +25,11 @@ public class MyMarkerView extends MarkerView {
         } else {
             tvContent.setText("" + Utils.formatNumber(e.getY(), 0, true));
         }
-        super.refreshContent(e, highlight); }
+        super.refreshContent(e, highlight);
+    }
     @Override
     public MPPointF getOffset() {
+
         return new MPPointF(-(getWidth() / 2), -getHeight());
     }
 }

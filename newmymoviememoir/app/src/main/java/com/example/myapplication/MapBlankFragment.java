@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapplication.memoirpersoncinemacred.Cinema;
+import com.example.myapplication.save.PersonObject;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
+
+    private PersonObject personObject;
 
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -53,6 +56,8 @@ public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
         Bundle bundle = this.getArguments();
         lat = bundle.getDouble("lat");
         lng = bundle.getDouble("lng");
+
+        personObject = (PersonObject) getActivity().getApplicationContext();
 
 
 
@@ -91,7 +96,7 @@ public class MapBlankFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Statue of Liberty")).setSnippet("I want to go there sometiome");
+        googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(personObject.getPerson().getAddress())).setSnippet("My Home");
         CameraPosition Liberty = CameraPosition.builder().target(new LatLng(lat, lng)).zoom(16).bearing(0).tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
 

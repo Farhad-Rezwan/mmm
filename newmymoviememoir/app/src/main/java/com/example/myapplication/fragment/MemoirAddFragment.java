@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -29,14 +28,25 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.memoirpersoncinemacred.Cinema;
+import com.example.myapplication.memoirpersoncinemacred.Memoir;
 import com.example.myapplication.memoirpersoncinemacred.MovieSearch;
+import com.example.myapplication.memoirpersoncinemacred.Person;
 import com.example.myapplication.networkconnection.NetworkConnection;
+import com.example.myapplication.save.PersonObject;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSelectedListener{
@@ -47,24 +57,33 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
     NetworkConnection networkConnection = null;
 
     private MovieSearch movieSearch;
+    private Cinema cinema;
 
-    private TextView name, releaseYear, rating, watchDate, watchTime;
+    private TextView name, releaseYear, rating, watchDate, watchTime, choosenCinema;
     private Spinner cinemaChoise;
     private EditText addComment;
     private Button addCinemaBtn, addMemoirBtn;
+    private String movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr;
 
     private DatePickerDialog.OnDateSetListener memoirDateSetListener;
+    private PersonObject personObject;
 
     ArrayList<String> cinemaName;
-//    private TimePickerDialog.OnTimeSetListener memoirTimeSetListener;
 
+//    private TimePickerDialog.OnTimeSetListener memoirTimeSetListener;
+    public MemoirAddFragment() {
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        if (null != bundle) movieSearch = (MovieSearch) bundle.getSerializable("bundleForMemoir");
+        if (null != bundle) {
+            movieSearch = (MovieSearch) bundle.getSerializable("bundleForMemoir");
+        }
+        if (null != bundle) cinema = (Cinema) bundle.getSerializable("CinemaAdd");
     }
 
     @Nullable
@@ -78,11 +97,14 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         releaseYear = view.findViewById(R.id.memoir_add_date_tv);
         rating = view.findViewById(R.id.memoir_add_rating_tv);
         addComment = view.findViewById(R.id.memoir_add_comment);
+        choosenCinema = view.findViewById(R.id.choosen_cinema);
 
 
         name.setText(movieSearch.getMovieName());
         releaseYear.setText(movieSearch.getReleaseYear());
         rating.setText("IMDb rating: " + movieSearch.getRate());
+        personObject = (PersonObject) getActivity().getApplicationContext();
+
 
         // date picker for adding watch date
 
@@ -141,20 +163,11 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         });
 
 
-        // spinner cinema choice
-//        cinemaChoise = view.findViewById(R.id.memoir_add_cinema_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()), R.array.states, android.R.layout.simple_spinner_dropdown_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        cinemaChoise.setAdapter(adapter);
-//        cinemaChoise.setOnItemSelectedListener(this);
-
+        if (cinema != null) {
+            choosenCinema.setText(cinema.getCinemaname());
+        }
 
         cinemaName = new ArrayList<>();
-
-
-
-
-
 
 
         cinemaChoise = view.findViewById(R.id.memoir_add_cinema_spinner);
@@ -181,7 +194,15 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
                 FragmentManager fragmentManager = (getActivity()).getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+
+
+
                 CinemaAddFragment cinemaAddFragment = new CinemaAddFragment();
+
+                Bundle bundleForMemoir = new Bundle();
+                bundleForMemoir.putSerializable("movieSearchForMem", movieSearch);
+                cinemaAddFragment.setArguments(bundleForMemoir);
+
                 fragmentTransaction.replace(R.id.content_frame, cinemaAddFragment);
                 fragmentTransaction.commit();
 
@@ -189,9 +210,88 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         });
 
         addMemoirBtn = view.findViewById(R.id.memoir_add_button);
+        addMemoirBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                register();
+
+            }
+        });
 
 
         return view;
+
+    }
+
+    public void register() {
+        initialize();
+        if (!validate()) {
+            Toast.makeText(getActivity(), "Memory add has failed", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            onRegisterSuccess();
+        }
+
+    }
+
+    public void initialize() {
+        movieNameStr = name.getText().toString().trim();
+        releaseDateStr = releaseYear.getText().toString().trim();
+        ratingStr = rating.getText().toString().trim();
+        dateTimeWatchedStr = watchDate.getText().toString().trim() + watchTime.getText().toString().trim();
+        cinemaNameStr = cinemaName.toString();
+        commentStr = choosenCinema.getText().toString();
+    }
+
+    public void onRegisterSuccess() {
+
+        BigDecimal bigDecimalRate = new BigDecimal(ratingStr);
+
+        Memoir memoir = new Memoir(movieNameStr,releaseDateStr, dateTimeWatchedStr, commentStr, bigDecimalRate, 1, personObject.getPerson().getPersonid());
+//        String moviename, String moviereleasedate, String datetimewatched, String comment, BigDecimal rating, int cinemaid, int personid
+
+//        String[] details = {movieNameStr, releaseDateStr, ratingStr, dateTimeWatchedStr, cinemaNameStr, commentStr};
+
+        AddMemoirTask addMemoirTask = new AddMemoirTask();
+        addMemoirTask.execute(memoir);
+    }
+
+    private class AddMemoirTask extends AsyncTask<Memoir, Void, String>{
+        @Override
+        protected String doInBackground(Memoir... params) {
+            String result= "The movie with name: " + params[0] + " was added";
+            Log.d(TAG, "doInBackground: " + result);
+            return networkConnection.addMemoir(params[0]);
+        }
+        @Override
+        protected void onPostExecute (String details) {
+            Person person = null;
+
+        }
+    }
+
+
+
+    public boolean validate() {
+        boolean valid = true;
+        if (movieNameStr.isEmpty() || movieNameStr.length() > 32){
+            name.setError("Please enter valid first name");
+            valid = false;
+        }
+        if (releaseDateStr.isEmpty() || releaseDateStr.length() > 32){
+            releaseYear.setError("Please enter valid sur name");
+            valid = false;
+        }
+        if (cinemaNameStr.isEmpty() || cinemaNameStr.length() > 70){
+            choosenCinema.setError("Please enter valid address");
+            valid = false;
+        }
+        if (commentStr.isEmpty() || commentStr.length() > 70){
+            addComment.setError("Please enter valid address");
+            valid = false;
+        }
+        return valid;
 
     }
 
@@ -199,7 +299,8 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
         String[] methodName = {"getAllCinemaNameAndSuburb"};
         GetCinemas getCinemaSuburb = new GetCinemas();
         getCinemaSuburb.execute(methodName);
-        }
+
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -213,34 +314,73 @@ public class MemoirAddFragment extends Fragment implements AdapterView.OnItemSel
 
     private class GetCinemas extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(String... params) {
-            String result = "task name: " + params[0];
-            Log.d(TAG, "doInBackground: " + result);
-            return networkConnection.getAllCinemaNameSuburb(params);
+    protected String doInBackground(String... params) {
+        String result = "task name: " + params[0];
+        Log.d(TAG, "doInBackground: " + result);
+        return networkConnection.getAllCinemaNameSuburb(params);
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+
+
+        JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
+
+        JsonObject jsonObject;
+
+        int arraySize = jsonArray.size();
+        for (int i = 0; i < arraySize; i++) {
+            jsonObject = jsonArray.get(i).getAsJsonObject();
+            Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
+            String cinemaname = jsonObject.get("cinemaname").getAsString();
+            cinemaName.add(cinemaname);
+
+            cinemaChoise.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cinemaName));
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-
-
-            JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
-
-            JsonObject jsonObject;
-
-            int arraySize = jsonArray.size();
-            for (int i = 0; i < arraySize; i++) {
-                jsonObject = jsonArray.get(i).getAsJsonObject();
-                Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
-                String cinemaname = jsonObject.get("cinemaname").getAsString();
-                cinemaName.add(cinemaname);
-
-                cinemaChoise.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cinemaName));
-            }
-
-
-        }
 
     }
+
+
+    }
+
+
+
+//    private class GetCinemaID extends AsyncTask<String, Void, String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String result = "task name: " + params[0];
+//            Log.d(TAG, "doInBackground: " + result);
+//            return networkConnection.getAllCinemaNameSuburb(params);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//
+//
+//            JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
+//
+//            JsonObject jsonObject;
+//
+//            int arraySize = jsonArray.size();
+//            for (int i = 0; i < arraySize; i++) {
+//                jsonObject = jsonArray.get(i).getAsJsonObject();
+//                Log.d(TAG, "onPostExecute: Json Objects" + jsonObject);
+//                String cinemaname = jsonObject.get("cinemaname").getAsString();
+//                cinemaName.add(cinemaname);
+//
+//                cinemaChoise.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cinemaName));
+//            }
+//
+//
+//        }
+//
+//
+//    }
+
+
+
+
 }
 
 

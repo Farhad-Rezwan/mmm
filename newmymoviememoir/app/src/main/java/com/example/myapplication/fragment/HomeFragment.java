@@ -88,6 +88,8 @@ public class HomeFragment extends Fragment {
 
         homeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+//        getting the person id from the person object using appilication context
+
         String [] details = {personObject.getPerson().getPersonid().toString()};
 //        String [] details = {"3"}; // testing purpose
 

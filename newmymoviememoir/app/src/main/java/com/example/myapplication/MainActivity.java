@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-
+    // makes sure that the values are initialised and regesters the person if succeed validation
     public void register() {
         initialize();
         if (!validate()) {
@@ -153,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
     }
+
+    // starts async task when all required fields are there
     public void onRegisterSuccess() {
         Log.d(TAG, "onRegisterSuccess: Name: " + fName);
         Log.d(TAG, "onRegisterSuccess: Surname: " + sName);
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    // validates the form with error message for the user
     public boolean validate() {
         boolean valid = true;
         if (fName.isEmpty() || fName.length() > 32){
@@ -210,6 +213,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+
+    // innitializes the string data, to ease validation
     public void initialize() {
         fName = etFName.getText().toString().trim();
         sName = etSName.getText().toString().trim();
@@ -238,6 +243,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+
+    // async task to add pperson
     private class AddPeopleTask extends AsyncTask<String, Void, String>{
         @Override
         protected String doInBackground(String... params) {
@@ -295,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    // on regestration success starts the home activity
     private void onRegestrationSuccess() {
 
         Intent intent;

@@ -16,7 +16,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.myapplication.fragment.CinemaAddFragment;
 import com.example.myapplication.fragment.HomeFragment;
+import com.example.myapplication.fragment.MemoirFragment;
 import com.example.myapplication.fragment.MovieViewFragment;
 import com.example.myapplication.fragment.MovieSearchFragment;
 import com.example.myapplication.fragment.ReportFragment;
@@ -86,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
                 // will be deleted after adding button here.
             case R.id.movie_memoir:
-//                replaceFragment(new MovieViewFragment());
+                replaceFragment(new MemoirFragment());
                 break;
             case R.id.reports:
                 replaceFragment(new ReportFragment());
@@ -101,6 +103,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTransaction.commit();
 //                getCinemaGeolocation();
                 break;
+//            case R.id.cinema_add:
+//                replaceFragment(new CinemaAddFragment());
+//                break;
         }
         //this code closes the drawer after you selected an item from the menu,otherwise stay open
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -129,7 +134,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 //    maps
     private void getUserGeolocation() {
+
 //        Person person = new Person (1,"Mr Warda", "Mr Warda", "Caulfield", "VIC" , 3174);
+//        String address = "South bank";
 
         String address = personObject.getPerson().getAddress();
         GeoLocation geoLocation = new GeoLocation();
