@@ -66,7 +66,7 @@ public class MovieSearchFragment extends Fragment implements Serializable {
 
         @Override
         protected String doInBackground(String... strings) {
-            return SearchGoogleApi.search(keyword, new String[]{"num"}, new String[]{"10"});
+            return SearchGoogleApi.search(keyword, new String[]{"num"}, new String[]{"3"});
 
         }
         @Override
